@@ -3,6 +3,8 @@ Grid Plugin
 
 An UE4 plugin for grid-based game
 
+.. image:: https://github.com/jinyuliao/Grid/blob/master/Resources/grid.png?raw=true
+
 Feature
 -------
 
