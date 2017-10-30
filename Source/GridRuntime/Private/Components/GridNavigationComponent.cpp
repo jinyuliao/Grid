@@ -109,6 +109,11 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 	return true;
 }
 
+bool UGridNavigationComponent::IsMoving()
+{
+	return bIsMoving;
+}
+
 bool UGridNavigationComponent::MoveToNextGrid()
 {
 	++FollowingPathIndex;

@@ -27,6 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid")
 	virtual bool RequestMove(UGrid* DestGrid);
 
+	UFUNCTION(BlueprintCallable, Category = "Grid")
+	virtual bool IsMoving();
+
 	UPROPERTY(BlueprintAssignable, Category = "Grid")
 	FGridNavEventSignature OnArrivalNewGrid;
 
