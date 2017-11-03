@@ -77,6 +77,9 @@ public:
 	void LineTraceTest(const FVector& Center, TArray<FHitResult>& Results);
 
 protected:
+	virtual void PostInitGridManager();
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn=true), Category = "GridManager")
 	float GridSize;
 

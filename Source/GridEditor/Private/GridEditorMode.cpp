@@ -161,8 +161,7 @@ AGridManager* FEdModeGridEditor::GetGridManager()
 		{
 			SquareGridManager = GetEditorWorld()->SpawnActor<ASquareGridManager>();
 			//Actor::PostInitializeComponents wouldn't be called in editor mode, so we create grid painter manually
-			SquareGridManager->GridPainter = NewObject<UGridPainter>(SquareGridManager, UGridDecalPainter::StaticClass());
-			SquareGridManager->GridPainter->GridManager = SquareGridManager;
+			SquareGridManager->PostInitGridManager();
 			UpdateGridSettings();
 		}
 
@@ -174,8 +173,7 @@ AGridManager* FEdModeGridEditor::GetGridManager()
 		{
 			HexGridManager = GetEditorWorld()->SpawnActor<AHexagonGridManager>();
 			//Actor::PostInitializeComponents wouldn't be called in editor mode, so we create grid painter manually
-			HexGridManager->GridPainter = NewObject<UGridPainter>(HexGridManager, UGridDecalPainter::StaticClass());
-			HexGridManager->GridPainter->GridManager = HexGridManager;
+			HexGridManager->PostInitGridManager();
 			UpdateGridSettings();
 		}
 
