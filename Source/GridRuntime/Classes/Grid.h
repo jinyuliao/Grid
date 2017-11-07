@@ -50,6 +50,9 @@ public:
 	FIntVector Coord;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
+	FBoxSphereBounds Bounds;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Grid")
 	float Height;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Grid")

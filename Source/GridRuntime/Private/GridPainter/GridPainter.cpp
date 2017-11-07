@@ -13,6 +13,11 @@ UGridPainter::~UGridPainter()
 
 }
 
+void UGridPainter::PostInitPainter()
+{
+
+}
+
 void UGridPainter::SetGridManager(AGridManager* NewGridManager)
 {
 	GridManager = NewGridManager;

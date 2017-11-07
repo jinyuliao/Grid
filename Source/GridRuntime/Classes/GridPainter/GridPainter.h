@@ -19,6 +19,8 @@ public:
 	UGridPainter();
 	virtual ~UGridPainter();
 
+	virtual void PostInitPainter();
+
 	virtual void SetGridManager(AGridManager* NewGridManager);
 
 	virtual void Tick(float DeltaTime) override;

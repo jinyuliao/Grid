@@ -17,9 +17,15 @@ public:
 	UGridOutlinePainter();
 	virtual ~UGridOutlinePainter();
 
+	virtual void PostInitPainter() override;
+
 	virtual void SetGridManager(AGridManager* NewGridManager) override;
 	
 	virtual void TickImpl_Implementation(float DeltaTime) override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridDecalPainter")
+	FLinearColor GetColor(UGrid* Grid);
+	virtual FLinearColor GetColor_Implementation(UGrid* Grid);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GridOutlinePainter")
 	float Thickness;
@@ -28,7 +34,10 @@ public:
 	float ZDelta;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GridOutlinePainter")
-	FLinearColor OutlineColor;
+	float Margin;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GridOutlinePainter")
+	float OutlineCompBoundScale;
 
 protected:
 	UGridOutlinePrimitiveComponent* GridOutlinePrimitiveComp;

@@ -52,6 +52,7 @@ void AGridManager::PostInitGridManager()
 {
 	GridPainter = NewObject<UGridPainter>(this, GridPainterClass);
 	check(GridPainter != nullptr);
+	GridPainter->PostInitPainter();
 	GridPainter->SetGridManager(this);
 }
 

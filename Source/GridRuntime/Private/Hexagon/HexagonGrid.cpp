@@ -22,6 +22,16 @@ void UHexagonGrid::SetGridSize(float Size)
 	{
 		GridSize = Size;
 
+		FVector Center = GetCenter();
+		FVector Points[6];
+		for (int i = 0; i < 6; ++i)
+		{
+			float Radian = PI / 180 * (i * 60 + 30);
+			Points[i] = Center + FVector(GridSize * FMath::Cos(Radian), GridSize * FMath::Sin(Radian), 0.f);
+		}
+
+		Bounds = FBox(Points, 6).ExpandBy(FVector::ZeroVector, FVector(0.f, 0.f, GridSize));
+
 		GridPainter->UpdateGridState(this);
 	}
 }

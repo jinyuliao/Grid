@@ -5,9 +5,6 @@
 #include "Components/PrimitiveComponent.h"
 #include "GridOutlinePrimitiveComponent.generated.h"
 
-class UGridOutlinePainter;
-class FGridOutlinePrimitiveSceneProxy;
-
 /**
  * 
  */
@@ -22,8 +19,7 @@ public:
 
 	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
 
-	virtual void UpdateGridInfo();
+	virtual FBoxSphereBounds CalcBounds(const FTransform& LocalToWorld) const override;
 
-	UPROPERTY()
-	UGridOutlinePainter* GridPainter;
+	virtual void UpdateGridInfo();
 };

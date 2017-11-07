@@ -19,7 +19,4 @@ public:
 	virtual FVector GetCenter() const override;
 
 	virtual void SetGridSize(float Size) override;
-
-	UPROPERTY(BlueprintReadOnly, Category = "SqureGrid")
-	FBox Bound;
 };
