@@ -11,6 +11,7 @@
  */
 UCLASS(Blueprintable, abstract)
 class GRIDRUNTIME_API UGridPainter : public UObject
+									,public FTickableGameObject
 {
 	GENERATED_BODY()
 	
@@ -18,14 +19,36 @@ public:
 	UGridPainter();
 	virtual ~UGridPainter();
 
+	virtual void SetGridManager(AGridManager* NewGridManager);
+
+	virtual void Tick(float DeltaTime) override;
+
+	virtual bool IsTickable() const override;
+
+	virtual TStatId GetStatId() const override;
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridPainter")
 	void UpdateGridState(UGrid* Grid);
 	virtual void UpdateGridState_Implementation(UGrid* Grid);
 
+	UFUNCTION(BlueprintNativeEvent, Category = "GridPainter")
+	void TickImpl(float DeltaTime);
+	virtual void TickImpl_Implementation(float DeltaTime);
+
 	UPROPERTY(BlueprintReadOnly, Category = "GridPainter")
 	AGridManager* GridManager;
 
-protected:
 	UPROPERTY(BlueprintReadWrite, Category = "GridPainter")
 	TArray<UGrid*> VisibleGrids;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Task")
+	bool bIsTickable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Task")
+	float TickInterval;
+
+	float LastTickTime;
+
+	TStatId StatId;
 };

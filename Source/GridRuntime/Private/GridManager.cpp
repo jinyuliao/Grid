@@ -52,7 +52,7 @@ void AGridManager::PostInitGridManager()
 {
 	GridPainter = NewObject<UGridPainter>(this, GridPainterClass);
 	check(GridPainter != nullptr);
-	GridPainter->GridManager = this;
+	GridPainter->SetGridManager(this);
 }
 
 void AGridManager::GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids)
