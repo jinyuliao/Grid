@@ -249,7 +249,7 @@ public:
 	}
 
 	template <class T>
-	void RemoveRepeatEdges(TArray<T>& OutlineEdges)
+	void RemoveSharedEdges(TArray<T>& OutlineEdges)
 	{
 		TArray<T> Result;
 		FIntVector CounterCoord;
@@ -347,7 +347,7 @@ public:
 			return LIdx < RIdx;
 		});
 
-		RemoveRepeatEdges(OutlineEdges);
+		RemoveSharedEdges(OutlineEdges);
 		CreateOutlineEdges(OutlineEdges);
 	}
 

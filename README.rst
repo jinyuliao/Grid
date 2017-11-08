@@ -11,6 +11,7 @@ Feature
 * Support square and hexagon grid
 * Support multi-level grid
 * Grid-based pathfinding and movement
+* Multiple grid rendering method: Decal and Outline(XCom2-like)
 * Blueprint support
 * Editor integration
 * Customizable classes
