@@ -13,7 +13,7 @@ enum EGridType
 	Hexagon
 };
 
-namespace SquareNS
+struct FSquareEdge
 {
 	enum EEdgeDirection
 	{
@@ -23,9 +23,17 @@ namespace SquareNS
 		Bottom,
 		Max
 	};
-}
 
-namespace HexagonNS
+	EEdgeDirection Direction;
+
+	FIntVector Coord;
+
+	FVector GridCenter;
+
+	FLinearColor Color;
+};
+
+struct FHexagonEdge
 {
 	enum EEdgeDirection
 	{
@@ -37,22 +45,8 @@ namespace HexagonNS
 		Left,
 		Max
 	};
-}
 
-struct FSquareEdge
-{
-	SquareNS::EEdgeDirection Direction;
-
-	FIntVector Coord;
-
-	FVector GridCenter;
-
-	FLinearColor Color;
-};
-
-struct FHexagonEdge
-{
-	HexagonNS::EEdgeDirection Direction;
+	EEdgeDirection Direction;
 
 	FIntVector Coord;
 
@@ -136,18 +130,18 @@ public:
 		return Result;
 	}
 
-	FVector GetEdgeV0(SquareNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV0(FSquareEdge::EEdgeDirection Dir, const FVector& Center)
 	{
 		const float HalfGridSize = UpdateParams.GridSize / 2.f;
 		switch (Dir)
 		{
-		case SquareNS::Left:
+		case FSquareEdge::Left:
 			return Center + FVector(-HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
-		case SquareNS::Right:
+		case FSquareEdge::Right:
 			return Center + FVector(-HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
-		case SquareNS::Top:
+		case FSquareEdge::Top:
 			return Center + FVector(HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
-		case SquareNS::Bottom:
+		case FSquareEdge::Bottom:
 			return Center + FVector(-HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
 		default:
 			LOG_ERROR(TEXT("FCompactGridPrimitiveSceneProxy::GetSquareEdgeV0 unknown direction"));
@@ -155,18 +149,18 @@ public:
 		}
 	}
 
-	FVector GetEdgeV1(SquareNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV1(FSquareEdge::EEdgeDirection Dir, const FVector& Center)
 	{
 		const float HalfGridSize = UpdateParams.GridSize / 2.f;
 		switch (Dir)
 		{
-		case SquareNS::Left:
+		case FSquareEdge::Left:
 			return Center + FVector(HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
-		case SquareNS::Right:
+		case FSquareEdge::Right:
 			return Center + FVector(HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
-		case SquareNS::Top:
+		case FSquareEdge::Top:
 			return Center + FVector(HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
-		case SquareNS::Bottom:
+		case FSquareEdge::Bottom:
 			return Center + FVector(-HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
 		default:
 			LOG_ERROR(TEXT("FCompactGridPrimitiveSceneProxy::GetSquareEdgeV1 unknown direction"));
@@ -174,46 +168,31 @@ public:
 		}
 	}
 
-	FVector GetEdgeV0(HexagonNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV0(FHexagonEdge::EEdgeDirection Dir, const FVector& Center)
 	{
 		float Radian = PI / 180 * (Dir * 60 + 30);
 		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZDelta);
 	}
 
-	FVector GetEdgeV1(HexagonNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV1(FHexagonEdge::EEdgeDirection Dir, const FVector& Center)
 	{
-		float Radian = PI / 180 * (((Dir + 1) % HexagonNS::Max) * 60 + 30);
+		float Radian = PI / 180 * (((Dir + 1) % FHexagonEdge::Max) * 60 + 30);
 		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZDelta);
 	}
 
-	bool CanConnect(SquareNS::EEdgeDirection Dir, const FIntVector& Start, const FIntVector& End)
+	void GetCounterEdge(FSquareEdge::EEdgeDirection InDir, const FIntVector& InCoord, FSquareEdge::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
 	{
-		switch (Dir)
-		{
-		case SquareNS::Left:
-		case SquareNS::Right:
-			return Start.Y == End.Y && FMath::Abs(Start.X - End.X) == 1;
-		case SquareNS::Top:
-		case SquareNS::Bottom:
-			return Start.X == End.X && FMath::Abs(Start.Y - End.Y) == 1;
-		default:
-			return false;
-		}
-	}
-
-	void GetCounterEdge(SquareNS::EEdgeDirection InDir, const FIntVector& InCoord, SquareNS::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
-	{
-		const SquareNS::EEdgeDirection CounterDirections[] = { SquareNS::Right, SquareNS::Left, SquareNS::Bottom, SquareNS::Top };
+		const FSquareEdge::EEdgeDirection CounterDirections[] = { FSquareEdge::Right, FSquareEdge::Left, FSquareEdge::Bottom, FSquareEdge::Top };
 		const FIntVector CounterCoordDelta[] = { FIntVector(0, -1, 0), FIntVector(0, 1, 0), FIntVector(1, 0, 0), FIntVector(-1, 0, 0) };
 
 		CounterDir = CounterDirections[InDir];
 		CounterCoord = InCoord + CounterCoordDelta[InDir];
 	}
 
-	void GetCounterEdge(HexagonNS::EEdgeDirection InDir, const FIntVector& InCoord, HexagonNS::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
+	void GetCounterEdge(FHexagonEdge::EEdgeDirection InDir, const FIntVector& InCoord, FHexagonEdge::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
 	{
-		const HexagonNS::EEdgeDirection CounterDirections[] = { HexagonNS::RightBottom, HexagonNS::LeftBottom, HexagonNS::Left
-																,HexagonNS::LeftTop, HexagonNS::RightTop, HexagonNS::Right };
+		const FHexagonEdge::EEdgeDirection CounterDirections[] = { FHexagonEdge::RightBottom, FHexagonEdge::LeftBottom, FHexagonEdge::Left
+																,FHexagonEdge::LeftTop, FHexagonEdge::RightTop, FHexagonEdge::Right };
 		const FIntVector CounterCoordDelta[] = { FIntVector(0, -1, 1), FIntVector(-1, 0, 1), FIntVector(-1, 1, 0)
 												,FIntVector(0, 1, -1), FIntVector(1, 0, -1), FIntVector(1, -1, 0) };
 
@@ -221,15 +200,16 @@ public:
 		CounterCoord = InCoord + CounterCoordDelta[InDir];
 	}
 
-	void FindSquareOutlineEdges(const TArray<FGridOutlineInfo*>& GridGroup, TArray<FSquareEdge>& OutlineEdges)
+	template <class T>
+	void FindOutlineEdges(const TArray<FGridOutlineInfo*>& GridGroup, TArray<T>& OutlineEdges)
 	{
 		if (GridGroup.Num() == 0)
 			return;
 
 		FIntVector Coord, CounterCoord;
-		TArray<FIntVector> Dir2Grids[SquareNS::Max];
+		TArray<FIntVector> Dir2Grids[T::Max];
 		TMap<FIntVector, FVector> Coord2Center;
-		SquareNS::EEdgeDirection CounterDir;
+		T::EEdgeDirection CounterDir;
 
 		for (int i = 0; i < GridGroup.Num(); ++i)
 		{
@@ -237,9 +217,9 @@ public:
 
 			Coord2Center.Add(Coord, GridGroup[i]->Center);
 
-			for (int DirIndex = 0; DirIndex < 4; ++DirIndex)
+			for (int DirIndex = 0; DirIndex < T::Max; ++DirIndex)
 			{
-				GetCounterEdge((SquareNS::EEdgeDirection)DirIndex, Coord, CounterDir, CounterCoord);
+				GetCounterEdge((T::EEdgeDirection)DirIndex, Coord, CounterDir, CounterCoord);
 
 				if (Dir2Grids[CounterDir].Contains(CounterCoord))
 				{
@@ -252,36 +232,37 @@ public:
 			}
 		}
 
-		FSquareEdge SquareEdge;
-		for (int i = 0; i < SquareNS::Max; ++i)
+		T Edge;
+		for (int i = 0; i < T::Max; ++i)
 		{
 			TArray<FIntVector>& Grids = Dir2Grids[i];
 
 			for (int j = 0; j < Grids.Num(); ++j)
 			{
-				SquareEdge.Coord = Grids[j];
-				SquareEdge.Color = GridGroup[0]->Color;;
-				SquareEdge.GridCenter = Coord2Center.FindChecked(SquareEdge.Coord);
-				SquareEdge.Direction = (SquareNS::EEdgeDirection)i;
-				OutlineEdges.Add(SquareEdge);
+				Edge.Coord = Grids[j];
+				Edge.Color = GridGroup[0]->Color;;
+				Edge.GridCenter = Coord2Center.FindChecked(Edge.Coord);
+				Edge.Direction = (T::EEdgeDirection)i;
+				OutlineEdges.Add(Edge);
 			}
 		}
 	}
 
-	void RemoveRepeatEdges(TArray<FSquareEdge>& OutlineEdges)
+	template <class T>
+	void RemoveRepeatEdges(TArray<T>& OutlineEdges)
 	{
-		TArray<FSquareEdge> Result;
+		TArray<T> Result;
 		FIntVector CounterCoord;
-		SquareNS::EEdgeDirection CounterDir;
+		T::EEdgeDirection CounterDir;
 		for (int i = 0; i < OutlineEdges.Num(); ++i)
 		{
-			FSquareEdge& Edge = OutlineEdges[i];
+			T& Edge = OutlineEdges[i];
 			GetCounterEdge(Edge.Direction, Edge.Coord, CounterDir, CounterCoord);
 
 			int j;
 			for (j = 0; j < Result.Num(); ++j)
 			{
-				FSquareEdge& CurrEdge = Result[j];
+				T& CurrEdge = Result[j];
 
 				if ((int32)(CurrEdge.GridCenter.Z / UpdateParams.GridSize) != (int32)(Edge.GridCenter.Z / UpdateParams.GridSize))
 					continue;
@@ -296,130 +277,25 @@ public:
 			if (j >= Result.Num())
 				Result.Add(Edge);
 		}
-
 		OutlineEdges = Result;
 	}
 
-	void CreateSquareEdges(const TArray<FSquareEdge>& SquareEdges)
+	template <class T>
+	void CreateOutlineEdges(const TArray<T>& OutlineEdges)
 	{
-		if (SquareEdges.Num() == 0)
+		if (OutlineEdges.Num() == 0)
 			return;
 
 		FEdge Edge;
-		for (int i = 0; i < SquareEdges.Num(); ++i)
-		{
-			const FSquareEdge& SquareEdge = SquareEdges[i];
-			Edge = FEdge(GetEdgeV0(SquareEdge.Direction, SquareEdge.GridCenter), GetEdgeV1(SquareEdge.Direction, SquareEdge.GridCenter));
-
-			int j;
-			for (j = 0; j < EdgeGroups.Num(); ++j)
-			{
-				if (EdgeGroups[j].Color == SquareEdge.Color)
-				{
-					EdgeGroups[j].Edges.Add(Edge);
-					break;
-				}
-			}
-
-			if (j >= EdgeGroups.Num())
-				EdgeGroups.Add(FEdgeGroup(SquareEdge.Color, { Edge }));
-		}
-	}
-
-	void FindHexagonOutlineEdges(const TArray<FGridOutlineInfo*>& GridGroup, TArray<FHexagonEdge>& OutlineEdges)
-	{
-		if (GridGroup.Num() == 0)
-			return;
-
-		FIntVector Coord, CounterCoord;
-		HexagonNS::EEdgeDirection CounterDir;
-		TArray<FIntVector> Dir2Grids[HexagonNS::Max];
-		TMap<FIntVector, FVector> Coord2Center;
-
-		for (int i = 0; i < GridGroup.Num(); ++i)
-		{
-			Coord = GridGroup[i]->Coord;
-
-			Coord2Center.Add(Coord, GridGroup[i]->Center);
-
-			for (int DirIndex = 0; DirIndex < HexagonNS::Max; ++DirIndex)
-			{
-				GetCounterEdge((HexagonNS::EEdgeDirection)DirIndex, Coord, CounterDir, CounterCoord);
-
-				if (Dir2Grids[CounterDir].Contains(CounterCoord))
-				{
-					Dir2Grids[CounterDir].Remove(CounterCoord);
-				}
-				else
-				{
-					Dir2Grids[DirIndex].Add(Coord);
-				}
-			}
-		}
-
-		FHexagonEdge HexEdge;
-		for (int i = 0; i < HexagonNS::Max; ++i)
-		{
-			TArray<FIntVector>& Grids = Dir2Grids[i];
-
-			for (int j = 0; j < Grids.Num(); ++j)
-			{
-				HexEdge.Coord = Grids[j];
-				HexEdge.Color = GridGroup[0]->Color;;
-				HexEdge.GridCenter = Coord2Center.FindChecked(HexEdge.Coord);
-				HexEdge.Direction = (HexagonNS::EEdgeDirection)i;
-				OutlineEdges.Add(HexEdge);
-			}
-		}
-	}
-
-	void RemoveRepeatEdges(TArray<FHexagonEdge>& OutlineEdges)
-	{
-		TArray<FHexagonEdge> Result;
-		FIntVector CounterCoord;
-		HexagonNS::EEdgeDirection CounterDir;
 		for (int i = 0; i < OutlineEdges.Num(); ++i)
 		{
-			FHexagonEdge& Edge = OutlineEdges[i];
-			GetCounterEdge(Edge.Direction, Edge.Coord, CounterDir, CounterCoord);
-
-			int j;
-			for (j = 0; j < Result.Num(); ++j)
-			{
-				FHexagonEdge& CurrEdge = Result[j];
-
-				if ((int32)(CurrEdge.GridCenter.Z / UpdateParams.GridSize) != (int32)(Edge.GridCenter.Z / UpdateParams.GridSize))
-					continue;
-
-				if (CurrEdge.Coord == CounterCoord && CurrEdge.Direction == CounterDir)
-					break;
-
-				if (CurrEdge.Coord == Edge.Coord && CurrEdge.Direction == Edge.Direction)
-					break;
-			}
-
-			if (j >= Result.Num())
-				Result.Add(Edge);
-		}
-
-		OutlineEdges = Result;
-	}
-
-	void CreateHexagonEdges(const TArray<FHexagonEdge>& HexagonEdges)
-	{
-		if (HexagonEdges.Num() == 0)
-			return;
-
-		FEdge Edge;
-		for (int i = 0; i < HexagonEdges.Num(); ++i)
-		{
-			const FHexagonEdge& HexEdge = HexagonEdges[i];
-			Edge = FEdge(GetEdgeV0(HexEdge.Direction, HexEdge.GridCenter), GetEdgeV1(HexEdge.Direction, HexEdge.GridCenter));
+			const T& OutlineEdge = OutlineEdges[i];
+			Edge = FEdge(GetEdgeV0(OutlineEdge.Direction, OutlineEdge.GridCenter), GetEdgeV1(OutlineEdge.Direction, OutlineEdge.GridCenter));
 
 			int j;
 			for (j = 0; j < EdgeGroups.Num(); ++j)
 			{
-				if (EdgeGroups[j].Color == HexEdge.Color)
+				if (EdgeGroups[j].Color == OutlineEdge.Color)
 				{
 					EdgeGroups[j].Edges.Add(Edge);
 					break;
@@ -427,14 +303,14 @@ public:
 			}
 
 			if (j >= EdgeGroups.Num())
-				EdgeGroups.Add(FEdgeGroup(HexEdge.Color, { Edge }));
+				EdgeGroups.Add(FEdgeGroup(OutlineEdge.Color, { Edge }));
 		}
 	}
 
+	template <class T>
 	void CollectGridOutline()
 	{
-		TArray<FHexagonEdge> HexOutlineEdges;
-		TArray<FSquareEdge> SquareOutlineEdges;
+		TArray<T> OutlineEdges;
 		//for the grids has same color, group by height
 		for (auto& Elem : UpdateParams.Color2Grids)
 		{
@@ -457,53 +333,22 @@ public:
 
 			for (auto& Height2GridsIter : Height2Grids)
 			{
-				switch (UpdateParams.GridType)
-				{
-				case Square:
-					FindSquareOutlineEdges(Height2GridsIter.Value, SquareOutlineEdges);
-					break;
-				case Hexagon:
-					FindHexagonOutlineEdges(Height2GridsIter.Value, HexOutlineEdges);
-					break;
-				default:
-					break;
-				}
+				FindOutlineEdges(Height2GridsIter.Value, OutlineEdges);
 			}
 		}
 
-		switch (UpdateParams.GridType)
+		OutlineEdges.Sort([&](const T& L, const T& R)
 		{
-		case Square:
-			SquareOutlineEdges.Sort([&](const FSquareEdge& L, const FSquareEdge& R)
-			{
-				int32 LIdx = -1, RIdx = -1;
-				bool LSucc = UpdateParams.ColorPriorities.Find(L.Color, LIdx);
-				bool RSucc = UpdateParams.ColorPriorities.Find(R.Color, RIdx);
-				if (!LSucc || !RSucc)
-					LOG_ERROR(TEXT("FGridOutlinePrimitiveSceneProxy::CollectGridOutline Hexagon grid sort failed, can't find grid color in UpdateParams.ColorPriorities"));
-				return LIdx < RIdx;
-			});
+			int32 LIdx = -1, RIdx = -1;
+			bool LSucc = UpdateParams.ColorPriorities.Find(L.Color, LIdx);
+			bool RSucc = UpdateParams.ColorPriorities.Find(R.Color, RIdx);
+			if (!LSucc || !RSucc)
+				LOG_ERROR(TEXT("FGridOutlinePrimitiveSceneProxy::CollectGridOutline Hexagon grid sort failed, can't find grid color in UpdateParams.ColorPriorities"));
+			return LIdx < RIdx;
+		});
 
-			RemoveRepeatEdges(SquareOutlineEdges);
-			CreateSquareEdges(SquareOutlineEdges);
-			break;
-		case Hexagon:
-			HexOutlineEdges.Sort([&](const FHexagonEdge& L, const FHexagonEdge& R) 
-			{
-				int32 LIdx = -1, RIdx = -1;
-				bool LSucc = UpdateParams.ColorPriorities.Find(L.Color, LIdx);
-				bool RSucc = UpdateParams.ColorPriorities.Find(R.Color, RIdx);
-				if (!LSucc || !RSucc)
-					LOG_ERROR(TEXT("FGridOutlinePrimitiveSceneProxy::CollectGridOutline Hexagon grid sort failed, can't find grid color in UpdateParams.ColorPriorities"));
-				return LIdx < RIdx;
-			});
-
-			RemoveRepeatEdges(HexOutlineEdges);
-			CreateHexagonEdges(HexOutlineEdges);
-			break;
-		default:
-			break;
-		}
+		RemoveRepeatEdges(OutlineEdges);
+		CreateOutlineEdges(OutlineEdges);
 	}
 
 	void DrawGridOutline(FPrimitiveDrawInterface* PDI) const 
@@ -526,7 +371,17 @@ public:
 
 		EdgeGroups.Reset();
 
-		CollectGridOutline();
+		switch (UpdateParams.GridType)
+		{
+		case Square:
+			CollectGridOutline<FSquareEdge>();
+			break;
+		case Hexagon:
+			CollectGridOutline<FHexagonEdge>();
+			break;
+		default:
+			break;
+		}
 	}
 
 private:
