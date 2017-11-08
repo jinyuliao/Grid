@@ -44,13 +44,16 @@ public:
 	TArray<UGrid*> VisibleGrids;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Task")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GridPainter")
 	bool bIsTickable;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Task")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GridPainter")
 	float TickInterval;
 
 	float LastTickTime;
+
+	UPROPERTY(BlueprintReadWrite, Category = "GridPainter")
+	bool bGridStateDirty;
 
 	TStatId StatId;
 };

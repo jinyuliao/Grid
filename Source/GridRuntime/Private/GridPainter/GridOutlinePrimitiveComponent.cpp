@@ -39,6 +39,28 @@ namespace HexagonNS
 	};
 }
 
+struct FSquareEdge
+{
+	SquareNS::EEdgeDirection Direction;
+
+	FIntVector Coord;
+
+	FVector GridCenter;
+
+	FLinearColor Color;
+};
+
+struct FHexagonEdge
+{
+	HexagonNS::EEdgeDirection Direction;
+
+	FIntVector Coord;
+
+	FVector GridCenter;
+
+	FLinearColor Color;
+};
+
 struct FGridOutlineInfo
 {
 	FLinearColor Color;
@@ -56,13 +78,13 @@ struct FGridOutlinePrimitiveCompUpdateParams
 
 	float GridSize;
 
-	float Margin;
-
 	float Thickness;
 
 	float ZDelta;
 
-	TArray<FGridOutlineInfo> GridInfoArray;
+	TMap<FLinearColor, TArray<FGridOutlineInfo> > Color2Grids;
+
+	TArray<FLinearColor> ColorPriorities;
 };
 
 struct FEdgeGroup
@@ -114,9 +136,9 @@ public:
 		return Result;
 	}
 
-	FVector GetSquareEdgeV0(SquareNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV0(SquareNS::EEdgeDirection Dir, const FVector& Center)
 	{
-		const float HalfGridSize = UpdateParams.GridSize / 2.f - UpdateParams.Margin;
+		const float HalfGridSize = UpdateParams.GridSize / 2.f;
 		switch (Dir)
 		{
 		case SquareNS::Left:
@@ -133,9 +155,9 @@ public:
 		}
 	}
 
-	FVector GetSquareEdgeV1(SquareNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV1(SquareNS::EEdgeDirection Dir, const FVector& Center)
 	{
-		const float HalfGridSize = UpdateParams.GridSize / 2.f - UpdateParams.Margin;
+		const float HalfGridSize = UpdateParams.GridSize / 2.f;
 		switch (Dir)
 		{
 		case SquareNS::Left:
@@ -152,13 +174,13 @@ public:
 		}
 	}
 
-	FVector GetHexagonEdgeV0(HexagonNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV0(HexagonNS::EEdgeDirection Dir, const FVector& Center)
 	{
 		float Radian = PI / 180 * (Dir * 60 + 30);
 		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZDelta);
 	}
 
-	FVector GetHexagonEdgeV1(HexagonNS::EEdgeDirection Dir, const FVector& Center)
+	FVector GetEdgeV1(HexagonNS::EEdgeDirection Dir, const FVector& Center)
 	{
 		float Radian = PI / 180 * (((Dir + 1) % HexagonNS::Max) * 60 + 30);
 		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZDelta);
@@ -179,18 +201,35 @@ public:
 		}
 	}
 
-	void CombineSquareEdges(const TArray<FGridOutlineInfo*>& GridGroup)
+	void GetCounterEdge(SquareNS::EEdgeDirection InDir, const FIntVector& InCoord, SquareNS::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
+	{
+		const SquareNS::EEdgeDirection CounterDirections[] = { SquareNS::Right, SquareNS::Left, SquareNS::Bottom, SquareNS::Top };
+		const FIntVector CounterCoordDelta[] = { FIntVector(0, -1, 0), FIntVector(0, 1, 0), FIntVector(1, 0, 0), FIntVector(-1, 0, 0) };
+
+		CounterDir = CounterDirections[InDir];
+		CounterCoord = InCoord + CounterCoordDelta[InDir];
+	}
+
+	void GetCounterEdge(HexagonNS::EEdgeDirection InDir, const FIntVector& InCoord, HexagonNS::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
+	{
+		const HexagonNS::EEdgeDirection CounterDirections[] = { HexagonNS::RightBottom, HexagonNS::LeftBottom, HexagonNS::Left
+																,HexagonNS::LeftTop, HexagonNS::RightTop, HexagonNS::Right };
+		const FIntVector CounterCoordDelta[] = { FIntVector(0, -1, 1), FIntVector(-1, 0, 1), FIntVector(-1, 1, 0)
+												,FIntVector(0, 1, -1), FIntVector(1, 0, -1), FIntVector(1, -1, 0) };
+
+		CounterDir = CounterDirections[InDir];
+		CounterCoord = InCoord + CounterCoordDelta[InDir];
+	}
+
+	void FindSquareOutlineEdges(const TArray<FGridOutlineInfo*>& GridGroup, TArray<FSquareEdge>& OutlineEdges)
 	{
 		if (GridGroup.Num() == 0)
 			return;
 
-		const SquareNS::EEdgeDirection CounterDirections[] = { SquareNS::Right, SquareNS::Left, SquareNS::Bottom, SquareNS::Top };
-		const FIntVector CounterCoordDelta[] = { FIntVector(0, -1, 0), FIntVector(0, 1, 0), FIntVector(1, 0, 0), FIntVector(-1, 0, 0) };
-
-		FIntVector Coord, CounterGrid;
+		FIntVector Coord, CounterCoord;
 		TArray<FIntVector> Dir2Grids[SquareNS::Max];
-		FLinearColor Color = GridGroup[0]->Color;
 		TMap<FIntVector, FVector> Coord2Center;
+		SquareNS::EEdgeDirection CounterDir;
 
 		for (int i = 0; i < GridGroup.Num(); ++i)
 		{
@@ -200,12 +239,11 @@ public:
 
 			for (int DirIndex = 0; DirIndex < 4; ++DirIndex)
 			{
-				auto CounterDir = CounterDirections[DirIndex];
-				CounterGrid = Coord + CounterCoordDelta[DirIndex];
+				GetCounterEdge((SquareNS::EEdgeDirection)DirIndex, Coord, CounterDir, CounterCoord);
 
-				if (Dir2Grids[CounterDir].Contains(CounterGrid))
+				if (Dir2Grids[CounterDir].Contains(CounterCoord))
 				{
-					Dir2Grids[CounterDir].Remove(CounterGrid);
+					Dir2Grids[CounterDir].Remove(CounterCoord);
 				}
 				else
 				{
@@ -214,80 +252,88 @@ public:
 			}
 		}
 
-		FIntVector Start;
-		TArray<FEdge> Edges;
-
-		for (int i = 0; i < 4; ++i)
+		FSquareEdge SquareEdge;
+		for (int i = 0; i < SquareNS::Max; ++i)
 		{
-			auto Dir = (SquareNS::EEdgeDirection)i;
 			TArray<FIntVector>& Grids = Dir2Grids[i];
-
-			Grids.Sort([&](const FIntVector& L, const FIntVector& R)
-			{
-				switch (Dir)
-				{
-				case SquareNS::Top:
-				case SquareNS::Bottom:
-					return L.X == R.X ? L.Y < R.Y : L.X < R.X;
-				case SquareNS::Left:
-				case SquareNS::Right:
-					return L.Y == R.Y ? L.X < R.X : L.Y < R.Y;
-				default:
-					break;
-				}
-				return L.X < R.X;
-			});
 
 			for (int j = 0; j < Grids.Num(); ++j)
 			{
-				if (j == 0)
-				{
-					Start = Grids[j];
-				}
-				else if (!CanConnect(Dir, Grids[j - 1], Grids[j]))
-				{
-					Edges.Add(FEdge(GetSquareEdgeV0(Dir, Coord2Center.FindChecked(Start)), GetSquareEdgeV1(Dir, Coord2Center.FindChecked(Grids[j - 1]))));
-					Start = Grids[j];
-				}
+				SquareEdge.Coord = Grids[j];
+				SquareEdge.Color = GridGroup[0]->Color;;
+				SquareEdge.GridCenter = Coord2Center.FindChecked(SquareEdge.Coord);
+				SquareEdge.Direction = (SquareNS::EEdgeDirection)i;
+				OutlineEdges.Add(SquareEdge);
 			}
-
-			if (Grids.Num() != 0)
-			{
-				Edges.Add(FEdge(GetSquareEdgeV0(Dir, Coord2Center.FindChecked(Start)), GetSquareEdgeV1(Dir, Coord2Center.FindChecked(Grids.Last()))));
-			}
-		}
-
-		bool Succ = false;
-		for (int i = 0; i < EdgeGroups.Num(); ++i)
-		{
-			if (EdgeGroups[0].Color == Color)
-			{
-				EdgeGroups[0].Edges.Append(Edges);
-				Succ = true;
-				break;
-			}
-		}
-
-		if (!Succ)
-		{
-			EdgeGroups.Add(FEdgeGroup(Color, Edges));
 		}
 	}
 
-	void CreateHexagonEdges(const TArray<FGridOutlineInfo*>& GridGroup)
+	void RemoveRepeatEdges(TArray<FSquareEdge>& OutlineEdges)
+	{
+		TArray<FSquareEdge> Result;
+		FIntVector CounterCoord;
+		SquareNS::EEdgeDirection CounterDir;
+		for (int i = 0; i < OutlineEdges.Num(); ++i)
+		{
+			FSquareEdge& Edge = OutlineEdges[i];
+			GetCounterEdge(Edge.Direction, Edge.Coord, CounterDir, CounterCoord);
+
+			int j;
+			for (j = 0; j < Result.Num(); ++j)
+			{
+				FSquareEdge& CurrEdge = Result[j];
+
+				if ((int32)(CurrEdge.GridCenter.Z / UpdateParams.GridSize) != (int32)(Edge.GridCenter.Z / UpdateParams.GridSize))
+					continue;
+
+				if (CurrEdge.Coord == CounterCoord && CurrEdge.Direction == CounterDir)
+					break;
+
+				if (CurrEdge.Coord == Edge.Coord && CurrEdge.Direction == Edge.Direction)
+					break;
+			}
+
+			if (j >= Result.Num())
+				Result.Add(Edge);
+		}
+
+		OutlineEdges = Result;
+	}
+
+	void CreateSquareEdges(const TArray<FSquareEdge>& SquareEdges)
+	{
+		if (SquareEdges.Num() == 0)
+			return;
+
+		FEdge Edge;
+		for (int i = 0; i < SquareEdges.Num(); ++i)
+		{
+			const FSquareEdge& SquareEdge = SquareEdges[i];
+			Edge = FEdge(GetEdgeV0(SquareEdge.Direction, SquareEdge.GridCenter), GetEdgeV1(SquareEdge.Direction, SquareEdge.GridCenter));
+
+			int j;
+			for (j = 0; j < EdgeGroups.Num(); ++j)
+			{
+				if (EdgeGroups[j].Color == SquareEdge.Color)
+				{
+					EdgeGroups[j].Edges.Add(Edge);
+					break;
+				}
+			}
+
+			if (j >= EdgeGroups.Num())
+				EdgeGroups.Add(FEdgeGroup(SquareEdge.Color, { Edge }));
+		}
+	}
+
+	void FindHexagonOutlineEdges(const TArray<FGridOutlineInfo*>& GridGroup, TArray<FHexagonEdge>& OutlineEdges)
 	{
 		if (GridGroup.Num() == 0)
 			return;
 
-		const HexagonNS::EEdgeDirection CounterDirections[] = { HexagonNS::RightBottom, HexagonNS::LeftBottom, HexagonNS::Left
-																,HexagonNS::LeftTop, HexagonNS::RightTop, HexagonNS::Right };
-		const FIntVector CounterCoordDelta[] = { FIntVector(0, -1, 1), FIntVector(-1, 0, 1), FIntVector(-1, 1, 0)
-												,FIntVector(0, 1, -1), FIntVector(1, 0, -1), FIntVector(1, -1, 0)};
-
-
-		FIntVector Coord, CounterGrid;
+		FIntVector Coord, CounterCoord;
+		HexagonNS::EEdgeDirection CounterDir;
 		TArray<FIntVector> Dir2Grids[HexagonNS::Max];
-		FLinearColor Color = GridGroup[0]->Color;
 		TMap<FIntVector, FVector> Coord2Center;
 
 		for (int i = 0; i < GridGroup.Num(); ++i)
@@ -296,14 +342,13 @@ public:
 
 			Coord2Center.Add(Coord, GridGroup[i]->Center);
 
-			for (int DirIndex = 0; DirIndex < 6; ++DirIndex)
+			for (int DirIndex = 0; DirIndex < HexagonNS::Max; ++DirIndex)
 			{
-				auto CounterDir = CounterDirections[DirIndex];
-				CounterGrid = Coord + CounterCoordDelta[DirIndex];
+				GetCounterEdge((HexagonNS::EEdgeDirection)DirIndex, Coord, CounterDir, CounterCoord);
 
-				if (Dir2Grids[CounterDir].Contains(CounterGrid))
+				if (Dir2Grids[CounterDir].Contains(CounterCoord))
 				{
-					Dir2Grids[CounterDir].Remove(CounterGrid);
+					Dir2Grids[CounterDir].Remove(CounterCoord);
 				}
 				else
 				{
@@ -312,91 +357,152 @@ public:
 			}
 		}
 
-		TArray<FEdge> Edges;
-
-		for (int i = 0; i < 6; ++i)
+		FHexagonEdge HexEdge;
+		for (int i = 0; i < HexagonNS::Max; ++i)
 		{
-			auto Dir = (HexagonNS::EEdgeDirection)i;
 			TArray<FIntVector>& Grids = Dir2Grids[i];
 
 			for (int j = 0; j < Grids.Num(); ++j)
 			{
-				const FIntVector& Grid = Grids[j];
-				Edges.Add(FEdge(GetHexagonEdgeV0(Dir, Coord2Center.FindChecked(Grid)), GetHexagonEdgeV1(Dir, Coord2Center.FindChecked(Grid))));
+				HexEdge.Coord = Grids[j];
+				HexEdge.Color = GridGroup[0]->Color;;
+				HexEdge.GridCenter = Coord2Center.FindChecked(HexEdge.Coord);
+				HexEdge.Direction = (HexagonNS::EEdgeDirection)i;
+				OutlineEdges.Add(HexEdge);
 			}
 		}
+	}
 
-		bool Succ = false;
-		for (int i = 0; i < EdgeGroups.Num(); ++i)
+	void RemoveRepeatEdges(TArray<FHexagonEdge>& OutlineEdges)
+	{
+		TArray<FHexagonEdge> Result;
+		FIntVector CounterCoord;
+		HexagonNS::EEdgeDirection CounterDir;
+		for (int i = 0; i < OutlineEdges.Num(); ++i)
 		{
-			if (EdgeGroups[0].Color == Color)
+			FHexagonEdge& Edge = OutlineEdges[i];
+			GetCounterEdge(Edge.Direction, Edge.Coord, CounterDir, CounterCoord);
+
+			int j;
+			for (j = 0; j < Result.Num(); ++j)
 			{
-				EdgeGroups[0].Edges.Append(Edges);
-				Succ = true;
-				break;
+				FHexagonEdge& CurrEdge = Result[j];
+
+				if ((int32)(CurrEdge.GridCenter.Z / UpdateParams.GridSize) != (int32)(Edge.GridCenter.Z / UpdateParams.GridSize))
+					continue;
+
+				if (CurrEdge.Coord == CounterCoord && CurrEdge.Direction == CounterDir)
+					break;
+
+				if (CurrEdge.Coord == Edge.Coord && CurrEdge.Direction == Edge.Direction)
+					break;
 			}
+
+			if (j >= Result.Num())
+				Result.Add(Edge);
 		}
 
-		if (!Succ)
+		OutlineEdges = Result;
+	}
+
+	void CreateHexagonEdges(const TArray<FHexagonEdge>& HexagonEdges)
+	{
+		if (HexagonEdges.Num() == 0)
+			return;
+
+		FEdge Edge;
+		for (int i = 0; i < HexagonEdges.Num(); ++i)
 		{
-			EdgeGroups.Add(FEdgeGroup(Color, Edges));
+			const FHexagonEdge& HexEdge = HexagonEdges[i];
+			Edge = FEdge(GetEdgeV0(HexEdge.Direction, HexEdge.GridCenter), GetEdgeV1(HexEdge.Direction, HexEdge.GridCenter));
+
+			int j;
+			for (j = 0; j < EdgeGroups.Num(); ++j)
+			{
+				if (EdgeGroups[j].Color == HexEdge.Color)
+				{
+					EdgeGroups[j].Edges.Add(Edge);
+					break;
+				}
+			}
+
+			if (j >= EdgeGroups.Num())
+				EdgeGroups.Add(FEdgeGroup(HexEdge.Color, { Edge }));
 		}
 	}
 
 	void CollectGridOutline()
 	{
-		TMap<FLinearColor, TArray<FGridOutlineInfo*> > Color2GridInfoArray;
-
-		// group grids by color
-		for (int i = 0; i < UpdateParams.GridInfoArray.Num(); ++i)
-		{
-			FGridOutlineInfo& GridInfo = UpdateParams.GridInfoArray[i];
-			if (Color2GridInfoArray.Contains(GridInfo.Color))
-			{
-				Color2GridInfoArray.FindChecked(GridInfo.Color).Add(&GridInfo);
-			}
-			else
-			{
-				Color2GridInfoArray.Add(GridInfo.Color, { &GridInfo });
-			}
-		}
-
+		TArray<FHexagonEdge> HexOutlineEdges;
+		TArray<FSquareEdge> SquareOutlineEdges;
 		//for the grids has same color, group by height
-		TMap<int32, TArray<FGridOutlineInfo*> > Height2GridInfoArray;
-		for (auto& Elem : Color2GridInfoArray)
+		for (auto& Elem : UpdateParams.Color2Grids)
 		{
+			TMap<int32, TArray<FGridOutlineInfo*> > Height2Grids;
 			const FLinearColor& Color = Elem.Key;
 			for (int i = 0; i < Elem.Value.Num(); ++i)
 			{
-				FGridOutlineInfo* GridInfo = Elem.Value[i];
+				FGridOutlineInfo& GridInfo = Elem.Value[i];
 
-				int32 Height = (int32)(GridInfo->Center.Z / UpdateParams.GridSize);
-				if (Height2GridInfoArray.Contains(Height))
+				int32 Height = (int32)(GridInfo.Center.Z / UpdateParams.GridSize);
+				if (Height2Grids.Contains(Height))
 				{
-					Height2GridInfoArray.FindChecked(Height).Add(GridInfo);
+					Height2Grids.FindChecked(Height).Add(&GridInfo);
 				}
 				else
 				{
-					Height2GridInfoArray.Add(Height, { GridInfo });
+					Height2Grids.Add(Height, { &GridInfo });
+				}
+			}
+
+			for (auto& Height2GridsIter : Height2Grids)
+			{
+				switch (UpdateParams.GridType)
+				{
+				case Square:
+					FindSquareOutlineEdges(Height2GridsIter.Value, SquareOutlineEdges);
+					break;
+				case Hexagon:
+					FindHexagonOutlineEdges(Height2GridsIter.Value, HexOutlineEdges);
+					break;
+				default:
+					break;
 				}
 			}
 		}
 
-		// grid in the same group has same color, similar height, ready for combine
-		for (auto& Elem : Height2GridInfoArray)
+		switch (UpdateParams.GridType)
 		{
-			switch (UpdateParams.GridType)
+		case Square:
+			SquareOutlineEdges.Sort([&](const FSquareEdge& L, const FSquareEdge& R)
 			{
-			case Square:
-				CombineSquareEdges(Elem.Value);
-				break;
-			case Hexagon:
-				// hexagon edges can't combine
-				CreateHexagonEdges(Elem.Value);
-				break;
-			default:
-				break;
-			}
+				int32 LIdx = -1, RIdx = -1;
+				bool LSucc = UpdateParams.ColorPriorities.Find(L.Color, LIdx);
+				bool RSucc = UpdateParams.ColorPriorities.Find(R.Color, RIdx);
+				if (!LSucc || !RSucc)
+					LOG_ERROR(TEXT("FGridOutlinePrimitiveSceneProxy::CollectGridOutline Hexagon grid sort failed, can't find grid color in UpdateParams.ColorPriorities"));
+				return LIdx < RIdx;
+			});
+
+			RemoveRepeatEdges(SquareOutlineEdges);
+			CreateSquareEdges(SquareOutlineEdges);
+			break;
+		case Hexagon:
+			HexOutlineEdges.Sort([&](const FHexagonEdge& L, const FHexagonEdge& R) 
+			{
+				int32 LIdx = -1, RIdx = -1;
+				bool LSucc = UpdateParams.ColorPriorities.Find(L.Color, LIdx);
+				bool RSucc = UpdateParams.ColorPriorities.Find(R.Color, RIdx);
+				if (!LSucc || !RSucc)
+					LOG_ERROR(TEXT("FGridOutlinePrimitiveSceneProxy::CollectGridOutline Hexagon grid sort failed, can't find grid color in UpdateParams.ColorPriorities"));
+				return LIdx < RIdx;
+			});
+
+			RemoveRepeatEdges(HexOutlineEdges);
+			CreateHexagonEdges(HexOutlineEdges);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -448,6 +554,9 @@ FBoxSphereBounds UGridOutlinePrimitiveComponent::CalcBounds(const FTransform& Lo
 
 	UGridOutlinePainter* GridPainter = Cast<UGridOutlinePainter>(GetOuter());
 
+	if (GridPainter == nullptr)
+		return Bounds;
+
 	for (int i = 0; i < GridPainter->VisibleGrids.Num(); ++i)
 	{
 		UGrid* Grid = GridPainter->VisibleGrids[i];
@@ -466,20 +575,33 @@ void UGridOutlinePrimitiveComponent::UpdateGridInfo()
 	UpdateParams.SceneProxy = (FGridOutlinePrimitiveSceneProxy*)SceneProxy;
 	UpdateParams.GridType = Cast<ASquareGridManager>(GridManager) == nullptr ? EGridType::Hexagon : EGridType::Square;
 	UpdateParams.GridSize = GridManager->GetGridSize();
-	UpdateParams.Thickness = GridPainter->Thickness;
-	UpdateParams.Margin = GridPainter->Margin;
+	UpdateParams.Thickness = GridPainter->OutlineThickness;
 	UpdateParams.ZDelta = GridPainter->ZDelta;
+	GridPainter->GetColorPriority(UpdateParams.ColorPriorities);
 
 	FGridOutlineInfo GridInfo;
+	TArray<FLinearColor> Colors;
 	for (int i = 0; i < GridPainter->VisibleGrids.Num(); ++i)
 	{
 		UGrid* Grid = GridPainter->VisibleGrids[i];
 
 		GridInfo.Coord = Grid->GetCoord();
 		GridInfo.Center = Grid->GetCenter();
-		GridInfo.Color = GridPainter->GetColor(Grid);
 
-		UpdateParams.GridInfoArray.Add(GridInfo);
+		GridPainter->GetColors(Grid, Colors);
+		for (int j = 0; j < Colors.Num(); ++j)
+		{
+			GridInfo.Color = Colors[j];
+
+			if (UpdateParams.Color2Grids.Contains(GridInfo.Color))
+			{
+				UpdateParams.Color2Grids.FindChecked(GridInfo.Color).Add(GridInfo);
+			}
+			else
+			{
+				UpdateParams.Color2Grids.Add(GridInfo.Color, { GridInfo });
+			}
+		}
 	}
 
 	check(UpdateParams.SceneProxy != nullptr);

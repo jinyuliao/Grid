@@ -6,22 +6,13 @@ UGridOutlinePainter::UGridOutlinePainter()
 
 	GridOutlinePrimitiveComp = CreateDefaultSubobject<UGridOutlinePrimitiveComponent>("CompactGridPrimitiveComp");
 
-	Thickness = 5.f;
+	OutlineThickness = 5.f;
 	ZDelta = 5.f;
-	Margin = 0.f;
-	OutlineCompBoundScale = 1.f;
 }
 
 UGridOutlinePainter::~UGridOutlinePainter()
 {
 
-}
-
-void UGridOutlinePainter::PostInitPainter()
-{
-	Super::PostInitPainter();
-
-	GridOutlinePrimitiveComp->SetBoundsScale(OutlineCompBoundScale);
 }
 
 void UGridOutlinePainter::SetGridManager(AGridManager* NewGridManager)
@@ -36,10 +27,22 @@ void UGridOutlinePainter::SetGridManager(AGridManager* NewGridManager)
 
 void UGridOutlinePainter::TickImpl_Implementation(float DeltaTime)
 {
-	GridOutlinePrimitiveComp->UpdateGridInfo();
+	if (bGridStateDirty)
+	{
+		GridOutlinePrimitiveComp->UpdateGridInfo();
+
+		bGridStateDirty = false;
+	}
 }
 
-FLinearColor UGridOutlinePainter::GetColor_Implementation(UGrid* Grid)
+void UGridOutlinePainter::GetColorPriority_Implementation(TArray<FLinearColor>& Colors)
 {
-	return FLinearColor::White;
+	Colors.Reset();
+	Colors.Add(FLinearColor::White);
+}
+
+void UGridOutlinePainter::GetColors_Implementation(UGrid* Grid, TArray<FLinearColor>& Colors)
+{
+	Colors.Reset();
+	Colors.Add(FLinearColor::White);
 }
