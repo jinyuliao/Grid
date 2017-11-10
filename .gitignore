@@ -3,6 +3,7 @@ DerivedDataCache
 Intermediate
 Saved
 Build
+NoCommitResource
 *.sdf
 *.sln
 *.suo

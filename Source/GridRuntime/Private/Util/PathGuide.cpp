@@ -75,7 +75,6 @@ void APathGuide::SetPath(const TArray<UGrid*>& Path)
 				Points.Add(CurrPoint);
 			}
 		}
-
 		PrePoint = CurrPoint;
 	}
 
@@ -94,18 +93,25 @@ void APathGuide::SetCustomPoints(const TArray<FVector>& Points)
 void APathGuide::SetStartDecalMaterial(UMaterialInterface* NewMaterial)
 {
 	StartDecalMaterial = NewMaterial;
+	StartDecalComp->SetDecalMaterial(StartDecalMaterial);
+	if (StartDecalMaterial == nullptr)
+	{
+		StartDecalComp->SetVisibility(false);
+	}
 }
 
 void APathGuide::SetDestinationDecalMaterial(UMaterialInterface* NewMaterial)
 {
 	DestinationDecalMaterial = NewMaterial;
+	DestDecalComp->SetDecalMaterial(DestinationDecalMaterial);
+	if (DestinationDecalMaterial == nullptr)
+	{
+		DestDecalComp->SetVisibility(false);
+	}
 }
 
 void APathGuide::UpdateDecal(const TArray<FVector>& Points)
 {
-	StartDecalComp->SetDecalMaterial(StartDecalMaterial);
-	DestDecalComp->SetDecalMaterial(DestinationDecalMaterial);
-
 	if (Points.Num() == 0)
 	{
 		StartDecalComp->SetVisibility(false);
@@ -113,15 +119,28 @@ void APathGuide::UpdateDecal(const TArray<FVector>& Points)
 	}
 	else
 	{
-		StartDecalComp->SetVisibility(true);
-		DestDecalComp->SetVisibility(true);
-
-		StartDecalComp->SetWorldLocation(Points[0]);
-		DestDecalComp->SetWorldLocation(Points.Last());
-
-		FVector DecalSize = UGridUtilities::CalcGridDecalSize(GridType, GridSize) * DecalSizeScale;
-
-		StartDecalComp->DecalSize = DecalSize;
-		DestDecalComp->DecalSize = DecalSize;
+		if (StartDecalMaterial != nullptr)
+		{
+			StartDecalComp->SetVisibility(true);
+			StartDecalComp->SetDecalMaterial(StartDecalMaterial);
+			StartDecalComp->SetWorldLocation(Points[0]);
+			StartDecalComp->DecalSize = UGridUtilities::CalcGridDecalSize(GridType, GridSize) * DecalSizeScale;
+		}
+		else
+		{
+			StartDecalComp->SetVisibility(false);
+		}
+		
+		if (DestinationDecalMaterial != nullptr)
+		{
+			DestDecalComp->SetVisibility(true);
+			DestDecalComp->SetDecalMaterial(DestinationDecalMaterial);
+			DestDecalComp->SetWorldLocation(Points.Last());
+			DestDecalComp->DecalSize = UGridUtilities::CalcGridDecalSize(GridType, GridSize) * DecalSizeScale;
+		}
+		else
+		{
+			DestDecalComp->SetVisibility(false);
+		}
 	}
 }
