@@ -1,17 +1,11 @@
-#include "GridPainter/GridOutlinePrimitiveComponent.h"
+#include "Components//GridOutlineComponent.h"
 #include "GridPainter/GridOutlinePainter.h"
 #include "Square/SquareGridManager.h"
 #include "Hexagon/HexagonGridManager.h"
 
 const static FName NAME_GridOutlineResourceNameForDebugging(TEXT("GridOutline"));
 
-class FGridOutlinePrimitiveSceneProxy;
-
-enum EGridType
-{
-	Square,
-	Hexagon
-};
+class FGridOutlineSceneProxy;
 
 struct FSquareEdge
 {
@@ -66,7 +60,7 @@ struct FGridOutlineInfo
 
 struct FGridOutlinePrimitiveCompUpdateParams
 {
-	FGridOutlinePrimitiveSceneProxy* SceneProxy;
+	FGridOutlineSceneProxy* SceneProxy;
 
 	EGridType GridType;
 
@@ -74,7 +68,7 @@ struct FGridOutlinePrimitiveCompUpdateParams
 
 	float Thickness;
 
-	float ZDelta;
+	float ZOffset;
 
 	TMap<FLinearColor, TArray<FGridOutlineInfo> > Color2Grids;
 
@@ -91,21 +85,19 @@ struct FEdgeGroup
 	FEdgeGroup(const FLinearColor& InColor, const TArray<FEdge>& InEdges): Color(InColor), Edges(InEdges){}
 };
 
-class FGridOutlinePrimitiveSceneProxy : public FPrimitiveSceneProxy
+class FGridOutlineSceneProxy : public FPrimitiveSceneProxy
 {
 public:
-	FGridOutlinePrimitiveSceneProxy(UGridOutlinePrimitiveComponent* InComponent)
+	FGridOutlineSceneProxy(UGridOutlineComponent* InComponent)
 		:FPrimitiveSceneProxy(InComponent, NAME_GridOutlineResourceNameForDebugging)
 	{
 	}
-
-	~FGridOutlinePrimitiveSceneProxy() {}
 
 	virtual uint32 GetMemoryFootprint(void) const override { return (sizeof(*this) + GetAllocatedSize()); }
 
 	virtual void GetDynamicMeshElements(const TArray<const FSceneView*>& Views, const FSceneViewFamily& ViewFamily, uint32 VisibilityMap, FMeshElementCollector& Collector) const override
 	{
-		QUICK_SCOPE_CYCLE_COUNTER(STAT_FGridOutlinePrimitiveSceneProxy_GetDynamicMeshElements);
+		QUICK_SCOPE_CYCLE_COUNTER(STAT_FGridOutlineSceneProxy_GetDynamicMeshElements);
 
 		for (int32 ViewIndex = 0; ViewIndex < Views.Num(); ViewIndex++)
 		{
@@ -136,13 +128,13 @@ public:
 		switch (Dir)
 		{
 		case FSquareEdge::Left:
-			return Center + FVector(-HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(-HalfGridSize, -HalfGridSize, UpdateParams.ZOffset);
 		case FSquareEdge::Right:
-			return Center + FVector(-HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(-HalfGridSize, HalfGridSize, UpdateParams.ZOffset);
 		case FSquareEdge::Top:
-			return Center + FVector(HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(HalfGridSize, -HalfGridSize, UpdateParams.ZOffset);
 		case FSquareEdge::Bottom:
-			return Center + FVector(-HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(-HalfGridSize, -HalfGridSize, UpdateParams.ZOffset);
 		default:
 			LOG_ERROR(TEXT("FCompactGridPrimitiveSceneProxy::GetSquareEdgeV0 unknown direction"));
 			return Center;
@@ -155,13 +147,13 @@ public:
 		switch (Dir)
 		{
 		case FSquareEdge::Left:
-			return Center + FVector(HalfGridSize, -HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(HalfGridSize, -HalfGridSize, UpdateParams.ZOffset);
 		case FSquareEdge::Right:
-			return Center + FVector(HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(HalfGridSize, HalfGridSize, UpdateParams.ZOffset);
 		case FSquareEdge::Top:
-			return Center + FVector(HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(HalfGridSize, HalfGridSize, UpdateParams.ZOffset);
 		case FSquareEdge::Bottom:
-			return Center + FVector(-HalfGridSize, HalfGridSize, UpdateParams.ZDelta);
+			return Center + FVector(-HalfGridSize, HalfGridSize, UpdateParams.ZOffset);
 		default:
 			LOG_ERROR(TEXT("FCompactGridPrimitiveSceneProxy::GetSquareEdgeV1 unknown direction"));
 			return Center;
@@ -171,13 +163,13 @@ public:
 	FVector GetEdgeV0(FHexagonEdge::EEdgeDirection Dir, const FVector& Center)
 	{
 		float Radian = PI / 180 * (Dir * 60 + 30);
-		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZDelta);
+		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZOffset);
 	}
 
 	FVector GetEdgeV1(FHexagonEdge::EEdgeDirection Dir, const FVector& Center)
 	{
 		float Radian = PI / 180 * (((Dir + 1) % FHexagonEdge::Max) * 60 + 30);
-		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZDelta);
+		return Center + FVector(UpdateParams.GridSize * FMath::Cos(Radian), UpdateParams.GridSize * FMath::Sin(Radian), UpdateParams.ZOffset);
 	}
 
 	void GetCounterEdge(FSquareEdge::EEdgeDirection InDir, const FIntVector& InCoord, FSquareEdge::EEdgeDirection& CounterDir, FIntVector& CounterCoord)
@@ -373,10 +365,10 @@ public:
 
 		switch (UpdateParams.GridType)
 		{
-		case Square:
+		case EGridType::Square:
 			CollectGridOutline<FSquareEdge>();
 			break;
-		case Hexagon:
+		case EGridType::Hexagon:
 			CollectGridOutline<FHexagonEdge>();
 			break;
 		default:
@@ -390,20 +382,22 @@ private:
 	TArray<FEdgeGroup> EdgeGroups;
 };
 //////////////////////////////////////////////////////////////////////////
-UGridOutlinePrimitiveComponent::UGridOutlinePrimitiveComponent()
+UGridOutlineComponent::UGridOutlineComponent()
+{
+	SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetCollisionResponseToAllChannels(ECR_Ignore);
+}
+
+UGridOutlineComponent::~UGridOutlineComponent()
 {
 }
 
-UGridOutlinePrimitiveComponent::~UGridOutlinePrimitiveComponent()
+FPrimitiveSceneProxy* UGridOutlineComponent::CreateSceneProxy()
 {
+	return new FGridOutlineSceneProxy(this);
 }
 
-FPrimitiveSceneProxy* UGridOutlinePrimitiveComponent::CreateSceneProxy()
-{
-	return new FGridOutlinePrimitiveSceneProxy(this);
-}
-
-FBoxSphereBounds UGridOutlinePrimitiveComponent::CalcBounds(const FTransform& LocalToWorld) const
+FBoxSphereBounds UGridOutlineComponent::CalcBounds(const FTransform& LocalToWorld) const
 {
 	FBoxSphereBounds Bounds(ForceInitToZero);
 
@@ -421,17 +415,17 @@ FBoxSphereBounds UGridOutlinePrimitiveComponent::CalcBounds(const FTransform& Lo
 	return Bounds;
 }
 
-void UGridOutlinePrimitiveComponent::UpdateGridInfo()
+void UGridOutlineComponent::UpdateGridInfo()
 {
 	UGridOutlinePainter* GridPainter = Cast<UGridOutlinePainter>(GetOuter());
 	AGridManager* GridManager = GridPainter->GridManager;
 
 	FGridOutlinePrimitiveCompUpdateParams UpdateParams;
-	UpdateParams.SceneProxy = (FGridOutlinePrimitiveSceneProxy*)SceneProxy;
+	UpdateParams.SceneProxy = (FGridOutlineSceneProxy*)SceneProxy;
 	UpdateParams.GridType = Cast<ASquareGridManager>(GridManager) == nullptr ? EGridType::Hexagon : EGridType::Square;
 	UpdateParams.GridSize = GridManager->GetGridSize();
 	UpdateParams.Thickness = GridPainter->OutlineThickness;
-	UpdateParams.ZDelta = GridPainter->ZDelta;
+	UpdateParams.ZOffset = GridPainter->ZOffset;
 	GridPainter->GetColorPriority(UpdateParams.ColorPriorities);
 
 	FGridOutlineInfo GridInfo;
@@ -461,7 +455,7 @@ void UGridOutlinePrimitiveComponent::UpdateGridInfo()
 
 	check(UpdateParams.SceneProxy != nullptr);
 
-	ENQUEUE_RENDER_COMMAND(GridOutlinePrimitiveCompUpdateCommand)(
+	ENQUEUE_RENDER_COMMAND(GridOutlineCompUpdateCommand)(
 		[UpdateParams](FRHICommandListImmediate& RHICmdList)
 	{
 		FScopeCycleCounter Context(UpdateParams.SceneProxy->GetStatId());

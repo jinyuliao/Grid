@@ -3,19 +3,19 @@
 #include "CoreMinimal.h"
 #include "PrimitiveSceneProxy.h"
 #include "Components/PrimitiveComponent.h"
-#include "GridOutlinePrimitiveComponent.generated.h"
+#include "GridOutlineComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GRIDRUNTIME_API UGridOutlinePrimitiveComponent : public UPrimitiveComponent
+class GRIDRUNTIME_API UGridOutlineComponent : public UPrimitiveComponent
 {
 	GENERATED_BODY()
 	
 public:
-	UGridOutlinePrimitiveComponent();
-	virtual ~UGridOutlinePrimitiveComponent();
+	UGridOutlineComponent();
+	virtual ~UGridOutlineComponent();
 
 	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
 

@@ -1,5 +1,5 @@
 #include "Hexagon/HexagonGridManager.h"
-#include "GridUtilities.h"
+#include "Util/GridUtilities.h"
 
 AHexagonGridManager::AHexagonGridManager()
 {
@@ -239,6 +239,7 @@ UHexagonGrid* AHexagonGridManager::CreateGrid(const FIntVector& Coord, const FHi
 	UHexagonGrid* Grid = NewObject<UHexagonGrid>(this, UHexagonGrid::StaticClass());
 	check(Grid != nullptr);
 
+	Grid->GridType = EGridType::Hexagon;
 	Grid->Coord = Coord;
 	Grid->Height = HitResult.ImpactPoint.Z;
 	Grid->GridInfo = NewObject<UGridInfo>(Grid, GridInfoClass);

@@ -7,6 +7,15 @@
 class AGridManager;
 class UGridPainter;
 
+UENUM(BlueprintType)
+enum class EGridType : uint8
+{
+	Unknown,
+	Square,
+	Hexagon
+};
+
+
 /**
 *
 */
@@ -45,6 +54,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Grid")
 	virtual FIntVector GetCoord() const;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Grid")
+	EGridType GridType;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
 	FIntVector Coord;

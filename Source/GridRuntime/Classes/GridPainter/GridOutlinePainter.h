@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GridPainter/GridPainter.h"
-#include "GridPainter/GridOutlinePrimitiveComponent.h"
+#include "Components/GridOutlineComponent.h"
 #include "GridOutlinePainter.generated.h"
 
 /**
@@ -41,8 +41,8 @@ public:
 	float OutlineThickness;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GridOutlinePainter")
-	float ZDelta;
+	float ZOffset;
 
 protected:
-	UGridOutlinePrimitiveComponent* GridOutlinePrimitiveComp;
+	UGridOutlineComponent* GridOutlineComp;
 };

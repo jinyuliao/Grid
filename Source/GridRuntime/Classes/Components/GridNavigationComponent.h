@@ -10,7 +10,7 @@ class UGrid;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGridNavEventSignature, UGridNavigationComponent*, Component);
 
-UCLASS( ClassGroup=(Navigation), Blueprintable, meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Grid), Blueprintable, meta=(BlueprintSpawnableComponent) )
 class GRIDRUNTIME_API UGridNavigationComponent : public UActorComponent
 {
 	GENERATED_BODY()

@@ -16,6 +16,7 @@ UGrid::UGrid()
 	GridInfo = nullptr;
 	GridManager = nullptr;
 	GridPainter = nullptr;
+	GridType = EGridType::Unknown;
 }
 
 UGrid::~UGrid()

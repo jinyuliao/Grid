@@ -23,4 +23,6 @@ public:
 	static FIntVector IntVectorMulInt(const FIntVector& L, int R);
 
 	static uint64 GetUniqueIdByCoordinate(const FIntVector& Coord);
+
+	static FVector CalcGridDecalSize(EGridType GridType, float GridSize);
 };

@@ -4,10 +4,10 @@ UGridOutlinePainter::UGridOutlinePainter()
 {
 	bIsTickable = true;
 
-	GridOutlinePrimitiveComp = CreateDefaultSubobject<UGridOutlinePrimitiveComponent>("CompactGridPrimitiveComp");
+	GridOutlineComp = CreateDefaultSubobject<UGridOutlineComponent>("GridOutlineComp");
 
 	OutlineThickness = 5.f;
-	ZDelta = 5.f;
+	ZOffset = 5.f;
 }
 
 UGridOutlinePainter::~UGridOutlinePainter()
@@ -19,9 +19,9 @@ void UGridOutlinePainter::SetGridManager(AGridManager* NewGridManager)
 {
 	Super::SetGridManager(NewGridManager);
 
-	if (!GridOutlinePrimitiveComp->IsRegistered())
+	if (!GridOutlineComp->IsRegistered())
 	{
-		GridOutlinePrimitiveComp->RegisterComponentWithWorld(GridManager->GetWorld());
+		GridOutlineComp->RegisterComponentWithWorld(GridManager->GetWorld());
 	}
 }
 
@@ -29,7 +29,7 @@ void UGridOutlinePainter::TickImpl_Implementation(float DeltaTime)
 {
 	if (bGridStateDirty)
 	{
-		GridOutlinePrimitiveComp->UpdateGridInfo();
+		GridOutlineComp->UpdateGridInfo();
 
 		bGridStateDirty = false;
 	}

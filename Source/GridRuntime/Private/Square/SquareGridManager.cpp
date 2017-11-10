@@ -1,6 +1,6 @@
 #include "Square/SquareGridManager.h"
 #include "Square/SquarePathFinder.h"
-#include "GridUtilities.h"
+#include "Util/GridUtilities.h"
 
 ASquareGridManager::ASquareGridManager()
 {
@@ -231,6 +231,7 @@ USquareGrid* ASquareGridManager::CreateGrid(const FIntVector& Coord, const FHitR
 	USquareGrid* Grid = NewObject<USquareGrid>(this, USquareGrid::StaticClass());
 	check(Grid != nullptr);
 
+	Grid->GridType = EGridType::Square;
 	Grid->Coord = Coord;
 	Grid->Height = HitResult.ImpactPoint.Z;
 	Grid->GridInfo = NewObject<UGridInfo>(Grid, GridInfoClass);
