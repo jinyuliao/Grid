@@ -6,17 +6,13 @@
 Grid
 ====
 
+.. warning:: This documentation is currently work-in-progress.
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   introduction
+   quick-start
+   customizable-classes

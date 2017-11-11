@@ -3,10 +3,13 @@ Grid Plugin
 
 An UE4 plugin for grid-based game
 
-.. image:: https://github.com/jinyuliao/Grid/blob/master/Resources/grid.png?raw=true
+* Documentation_
+* SampleProject_
 
-Feature
--------
+.. image:: https://github.com/jinyuliao/Grid/blob/master/docs/images/grid.png?raw=true
+
+Features
+--------
 
 * Support square and hexagon grid
 * Support multi-level grid
@@ -16,28 +19,6 @@ Feature
 * Editor integration
 * Customizable classes
 
-Sample
-------
-
-Sample_Grid_
-
-QuickStart
-----------
-
-* Your pawn should implement IGridPawnInterface(C++) or GridPawnInterface(Blueprint)
-* Your pawn's default controller should be AAIController or its subclass(we need it to implement default grid-based movement)
-* Add UGridNavigationComponent to your pawn(if you has custom UGridNavigationAgent, add it to Component's 'AgentClasses')
-* Spawn GridManager at game startup(if you have custom class, set it properly in spawn parameter)
-* Write you game logic, most function you need is in GridManager
-
-Customizable Classes
---------------------
-
-* UGridInfo: inherit from this class to add game-specific information
-* USquarePathFinder and UHexagonPathFinder: customize pathfinding logic
-* UGridNavigationAgent: inherit from this class to implement special movement, e.g.: jump, climb and so on
-* UGridPainter: customize grid rendering(default is UGridDecalPainter which using decal component to rendering grid)
-
 Install
 -------
 
@@ -45,5 +26,5 @@ Install
 #. generate project file
 #. compile
 
-
-.. _Sample_Grid: https://github.com/jinyuliao/Sample_Grid
+.. _Documentation: http://grid.readthedocs.io/
+.. _SampleProject: https://github.com/jinyuliao/Sample_Grid
