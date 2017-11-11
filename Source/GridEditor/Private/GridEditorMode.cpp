@@ -1,8 +1,11 @@
 #include "GridEditorMode.h"
+#include "GridEditorPrivatePCH.h"
 #include "Toolkits/ToolkitManager.h"
 #include "EditorModeManager.h"
 #include "GridEditorModeToolkit.h"
 #include "GridPainter/GridDecalPainter.h"
+#include "FileHelper.h"
+#include "MessageDialog.h"
 
 #define LOCTEXT_NAMESPACE "GridEditorMode" 
 
@@ -12,6 +15,8 @@ FEdModeGridEditor::FEdModeGridEditor()
 
 	HexGridManager = nullptr;
 	SquareGridManager = nullptr;
+
+	GridShowRange = 50;
 
 	SquareGridSettings = NewObject<USquareGridSettings>(GetTransientPackage(), TEXT("SquareGridSettings"), RF_Transactional);
 	SquareGridSettings->SetParent(this);
@@ -204,10 +209,6 @@ void FEdModeGridEditor::FreeGridManager()
 
 void FEdModeGridEditor::UpdateGridSettings()
 {
-	AGridManager* GridManager = GetGridManager();
-
-	UGridDecalPainter* DecalPainter = Cast<UGridDecalPainter>(GridManager->GetGridPainter());
-
 	for (int i = 0; i < VisibleGrids.Num(); ++i)
 	{
 		UGrid* Grid = VisibleGrids[i];
@@ -217,45 +218,64 @@ void FEdModeGridEditor::UpdateGridSettings()
 
 	if (CurrentModeName == FGridEditorCommands::SquareModeName)
 	{
-		if (DecalPainter != nullptr)
-		{
-			DecalPainter->DefaultDecalMaterial = SquareGridSettings->DecalMaterial;
-		}
-		GridManager->SetGridSize(SquareGridSettings->GridSize);
-
-		if (SquareGridSettings->bShowGrids)
-		{
-			UGrid* Center = GridManager->GetGridByPosition(FVector(0.f, 0.f, 0.f));
-
-			GridManager->GetGridsByRange(Center, SquareGridSettings->ShowGridRange, VisibleGrids);
-			for (int i = 0; i < VisibleGrids.Num(); ++i)
-			{
-				UGrid* Grid = VisibleGrids[i];
-				Grid->SetVisibility(true);
-			}
-		}
+		UpdateSquareSettings();
 	}
 	else if (CurrentModeName == FGridEditorCommands::HexagonModeName)
 	{
-		if (DecalPainter != nullptr)
-		{
-			DecalPainter->DefaultDecalMaterial = HexagonGridSettings->DecalMaterial;
-		}
-		GridManager->SetGridSize(HexagonGridSettings->GridSize);
+		UpdateHexagonSettings();
+	}
+}
 
-		if (HexagonGridSettings->bShowGrids)
-		{
-			UGrid* Center = GridManager->GetGridByPosition(FVector(0.f, 0.f, 0.f));
+void FEdModeGridEditor::UpdateSquareSettings()
+{
+	AGridManager* GridManager = GetGridManager();
+	UGridDecalPainter* DecalPainter = Cast<UGridDecalPainter>(GridManager->GetGridPainter());
 
-			GridManager->GetGridsByRange(Center, HexagonGridSettings->ShowGridRange, VisibleGrids);
-			for (int i = 0; i < VisibleGrids.Num(); ++i)
-			{
-				UGrid* Grid = VisibleGrids[i];
-				Grid->SetVisibility(true);
-			}
+	if (DecalPainter != nullptr)
+	{
+		DecalPainter->DefaultDecalMaterial = SquareGridSettings->DecalMaterial;
+	}
+	GridManager->SetGridSize(SquareGridSettings->GridSize);
+
+	if (SquareGridSettings->bShowGrids)
+	{
+ 		FEditorViewportClient* Viewport = (FEditorViewportClient*)GEditor->GetActiveViewport()->GetClient();
+
+		UGrid* Center = GridManager->GetGridByPosition(Viewport->GetViewLocation());
+
+		GridManager->GetGridsByRange(Center, GridShowRange, VisibleGrids);
+		for (int i = 0; i < VisibleGrids.Num(); ++i)
+		{
+			UGrid* Grid = VisibleGrids[i];
+			Grid->SetVisibility(true);
 		}
 	}
-	
+}
+
+void FEdModeGridEditor::UpdateHexagonSettings()
+{
+	AGridManager* GridManager = GetGridManager();
+	UGridDecalPainter* DecalPainter = Cast<UGridDecalPainter>(GridManager->GetGridPainter());
+
+	if (DecalPainter != nullptr)
+	{
+		DecalPainter->DefaultDecalMaterial = HexagonGridSettings->DecalMaterial;
+	}
+	GridManager->SetGridSize(HexagonGridSettings->GridSize);
+
+	if (HexagonGridSettings->bShowGrids)
+	{
+		FEditorViewportClient* Viewport = (FEditorViewportClient*)GEditor->GetActiveViewport()->GetClient();
+
+		UGrid* Center = GridManager->GetGridByPosition(Viewport->GetViewLocation());
+
+		GridManager->GetGridsByRange(Center, GridShowRange, VisibleGrids);
+		for (int i = 0; i < VisibleGrids.Num(); ++i)
+		{
+			UGrid* Grid = VisibleGrids[i];
+			Grid->SetVisibility(true);
+		}
+	}
 }
 
 #undef LOCTEXT_NAMESPACE

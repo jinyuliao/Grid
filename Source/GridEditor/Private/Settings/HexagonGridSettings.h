@@ -16,19 +16,16 @@ public:
 
 	void SetParent(FEdModeGridEditor* GridEditorMode);
 
-	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
+	UPROPERTY(EditAnywhere, Category = "HexagonGridSettings")
 	bool bShowGrids;
 
-	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
+	UPROPERTY(EditAnywhere, Category = "HexagonGridSettings")
 	bool bGridSnap;
 
-	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
-	int ShowGridRange;
-
-	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
+	UPROPERTY(EditAnywhere, Category = "HexagonGridSettings")
 	float GridSize;
 
-	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
+	UPROPERTY(EditAnywhere, Category = "HexagonGridSettings")
 	UMaterialInterface* DecalMaterial;
 
 private:

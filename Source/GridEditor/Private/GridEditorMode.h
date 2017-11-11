@@ -14,7 +14,6 @@ class FEdModeGridEditor : public FEdMode
 {
 public:
 	FEdModeGridEditor();
-
 	virtual ~FEdModeGridEditor();
 
 	virtual bool UsesToolkits() const override;
@@ -49,8 +48,12 @@ private:
 	void FreeGridManager();
 
 	void UpdateGridSettings();
+	void UpdateSquareSettings();
+	void UpdateHexagonSettings();
 
 private:
+	int32 GridShowRange;
+
 	bool bEditorDelegateRegistered;
 
 	FName CurrentModeName;

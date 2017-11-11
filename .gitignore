@@ -12,3 +12,4 @@ NoCommitResource
 *.db
 /docs/sphinx-build-result
 /.vs
+docs/_build

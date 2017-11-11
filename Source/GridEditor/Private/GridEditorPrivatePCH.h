@@ -15,5 +15,5 @@
 #include "Square/SquarePathFinder.h"
 
 #define LOG_WARNING(FMT, ...) UE_LOG(GridEditor, Warning, (FMT), ##__VA_ARGS__)
-
+#define LOG_ERROR(FMT, ...) UE_LOG(GridEditor, Error, (FMT), ##__VA_ARGS__)
 

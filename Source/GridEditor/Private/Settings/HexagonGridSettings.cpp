@@ -8,7 +8,6 @@ UHexagonGridSettings::UHexagonGridSettings()
 	bShowGrids = false;
 	bGridSnap = false;
 
-	ShowGridRange = 5;
 	GridSize = 100.f;
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInstance> DecalMat(TEXT("/Grid/Materials/Hexagon/Mat_HexagonGrid_Normal.Mat_HexagonGrid_Normal"));

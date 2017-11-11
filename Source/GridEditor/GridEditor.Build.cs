@@ -46,7 +46,9 @@ namespace UnrealBuildTool.Rules
                     "WorkspaceMenuStructure",
                     "LevelEditor",
                     "EditorStyle",
-                    "ContentBrowser"
+                    "ContentBrowser",
+                    "DesktopPlatform",
+                    "Json"
 					// ... add private dependencies that you statically link with here ...
 				}
 				);

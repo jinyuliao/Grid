@@ -20,9 +20,6 @@ public:
 	bool bShowGrids;
 
 	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
-	int ShowGridRange;
-
-	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
 	float GridSize;
 
 	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
