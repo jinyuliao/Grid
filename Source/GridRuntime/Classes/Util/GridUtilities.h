@@ -8,7 +8,7 @@
  * 
  */
 UCLASS(Blueprintable)
-class GRIDRUNTIME_API UGridUtilities : public UObject
+class GRIDRUNTIME_API UGridUtilities : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	

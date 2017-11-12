@@ -72,6 +72,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "GridManager")
 	int32 TraceTestDistance;
 
+	void SetGridPainter(TSubclassOf<UGridPainter> PainterClass);
+
 	UGridPainter* GetGridPainter();
 
 	void LineTraceTest(const FVector& Center, TArray<FHitResult>& Results);

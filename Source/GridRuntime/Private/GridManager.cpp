@@ -29,6 +29,7 @@ AGridManager::AGridManager()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	GridPainter = nullptr;
 	GridSize = 0.f;
 	TraceTestDistance = 10000.f;
 
@@ -50,15 +51,23 @@ void AGridManager::PostInitializeComponents()
 
 void AGridManager::PostInitGridManager()
 {
-	GridPainter = NewObject<UGridPainter>(this, GridPainterClass);
-	check(GridPainter != nullptr);
-	GridPainter->PostInitPainter();
-	GridPainter->SetGridManager(this);
+	SetGridPainter(GridPainterClass);
 }
 
 void AGridManager::GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids)
 {
 	Grids.Empty();
+}
+
+void AGridManager::SetGridPainter(TSubclassOf<UGridPainter> PainterClass)
+{
+	if (GridPainter != nullptr)
+		GridPainter->ConditionalBeginDestroy();
+
+	GridPainter = NewObject<UGridPainter>(this, GridPainterClass);
+	check(GridPainter != nullptr);
+	GridPainter->PostInitPainter();
+	GridPainter->SetGridManager(this);
 }
 
 UGridPainter* AGridManager::GetGridPainter()

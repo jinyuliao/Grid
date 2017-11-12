@@ -32,6 +32,6 @@ void UHexagonGrid::SetGridSize(float Size)
 
 		Bounds = FBox(Points, 6).ExpandBy(FVector::ZeroVector, FVector(0.f, 0.f, GridSize));
 
-		GridPainter->UpdateGridState(this);
+		GridManager->GetGridPainter()->UpdateGridState(this);
 	}
 }

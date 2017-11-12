@@ -23,6 +23,6 @@ void USquareGrid::SetGridSize(float Size)
 
 		Bounds = FBox::BuildAABB(GetCenter(), FVector(GridSize / 2.f)).ExpandBy(FVector::ZeroVector, FVector(0.f, 0.f, GridSize));
 
-		GridPainter->UpdateGridState(this);
+		GridManager->GetGridPainter()->UpdateGridState(this);
 	}
 }

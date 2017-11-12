@@ -246,7 +246,6 @@ UHexagonGrid* AHexagonGridManager::CreateGrid(const FIntVector& Coord, const FHi
 	Grid->GridInfo->ParentGrid = Grid;
 	Grid->GridInfo->HitResult = HitResult;
 	Grid->GridManager = this;
-	Grid->GridPainter = GridPainter;
 	Grid->SetGridSize(GridSize);
 
 	GridPainter->UpdateGridState(Grid);

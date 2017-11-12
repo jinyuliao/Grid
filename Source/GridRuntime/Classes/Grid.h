@@ -73,9 +73,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
 	AGridManager* GridManager;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Grid")
-	UGridPainter* GridPainter;
-
 	void GridInfoChanged();
 
 protected:
