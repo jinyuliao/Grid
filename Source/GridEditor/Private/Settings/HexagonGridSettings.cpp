@@ -10,7 +10,7 @@ UHexagonGridSettings::UHexagonGridSettings()
 
 	GridSize = 100.f;
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInstance> DecalMat(TEXT("/Grid/Materials/Hexagon/Mat_HexagonGrid_Normal.Mat_HexagonGrid_Normal"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> DecalMat(TEXT("/Grid/Materials/Hexagon/M_HexagonGrid_Normal.M_HexagonGrid_Normal"));
 	DecalMaterial = DecalMat.Object;
 }
 
