@@ -27,7 +27,7 @@ public:
 	int MaxStep;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "Grid")
-	int MaxFindStep;
+	int MaxSearchStep;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "Grid")
 	bool bRemoveDest;

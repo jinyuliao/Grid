@@ -110,6 +110,11 @@ void APathGuide::SetDestinationDecalMaterial(UMaterialInterface* NewMaterial)
 	}
 }
 
+void APathGuide::Clear()
+{
+	SetPath(TArray<UGrid*>());
+}
+
 void APathGuide::UpdateDecal(const TArray<FVector>& Points)
 {
 	if (Points.Num() == 0)

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/LineComponent.h"
+#include "Grid.h"
 #include "PathGuide.generated.h"
 
 UCLASS()
@@ -25,6 +26,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "PathGuide")
 	virtual void SetDestinationDecalMaterial(UMaterialInterface* NewMaterial);
+
+	UFUNCTION(BlueprintCallable, Category = "PathGuide")
+	virtual void Clear();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PathGuide")
 	FLinearColor PathColor;

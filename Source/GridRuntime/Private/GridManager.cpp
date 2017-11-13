@@ -158,7 +158,7 @@ bool AGridManager::FindPath(const FGridPathFindingRequest& Request, TArray<UGrid
 
 	UGrid* Start = GetGridByPosition(Request.StartPos);
 	UGrid* Dest = GetGridByPosition(Request.DestPos);
-	int MaxFindStep = Request.MaxFindStep;
+	int MaxFindStep = Request.MaxSearchStep;
 
 	CameFrom.Add(Start, nullptr);
 	CostSoFar.Add(Start, 0);
@@ -178,7 +178,7 @@ bool AGridManager::FindPath(const FGridPathFindingRequest& Request, TArray<UGrid
 			break;
 		}
 
-		if (++Step > Request.MaxFindStep)
+		if (++Step > Request.MaxSearchStep)
 		{
 			LOG_WARNING(TEXT("AGridManager::FindPath Pathfinding failed, run out of MaxFindStep"))
 			break;
