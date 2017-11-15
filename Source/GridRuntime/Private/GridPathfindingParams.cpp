@@ -5,7 +5,8 @@ FGridPathFindingRequest::FGridPathFindingRequest()
 {
 	bRemoveDest = false;
 	MaxStep = -1;
-	MaxSearchStep = 5000;
+	MaxSearchStep = 1000;
+	ExtraFlags = 0;
 }
 
 UGridPathFinder::UGridPathFinder()

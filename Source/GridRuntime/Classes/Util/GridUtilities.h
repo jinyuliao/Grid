@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "GridUtilities.generated.h"
 
 /**
@@ -21,6 +22,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
 	static FIntVector IntVectorMulInt(const FIntVector& L, int R);
+
+	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
+	static bool GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor = FLinearColor::Red, FLinearColor TraceHitColor = FLinearColor::Green, float DrawTime = 5.0f);
 
 	static uint64 GetUniqueIdByCoordinate(const FIntVector& Coord);
 

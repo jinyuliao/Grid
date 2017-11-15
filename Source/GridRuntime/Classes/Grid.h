@@ -80,9 +80,6 @@ protected:
 
 	float GridSize;
 
-	// for pathfinding
-	int HeuristicValue;
-
 	friend class AGridManager;
 	friend class UGridPainter;
 };

@@ -11,7 +11,6 @@ UGrid::UGrid()
 	Height = 0.f;
 
 	bVisible = false;
-	HeuristicValue = 0;
 
 	GridInfo = nullptr;
 	GridManager = nullptr;

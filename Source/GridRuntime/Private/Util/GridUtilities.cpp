@@ -45,3 +45,13 @@ FIntVector UGridUtilities::IntVectorMulInt(const FIntVector& L, int R)
 {
 	return L * R;
 }
+
+bool UGridUtilities::GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor, FLinearColor TraceHitColor, float DrawTime)
+{
+	FVector Start = Grid->GetCenter() + FVector(0.f, 0.f, TraceDistance / 2.f);
+	FVector End = Grid->GetCenter() - FVector(0.f, 0.f, TraceDistance / 2.f);
+
+	return UKismetSystemLibrary::LineTraceSingleForObjects((UObject*)Grid->GridManager->GetWorld(), Start, End, ObjectTypes
+		, bTraceComplex, ActorsToIgnore, DrawDebugType, OutHit
+		, bIgnoreSelf, TraceColor, TraceHitColor, DrawTime);
+}

@@ -24,13 +24,16 @@ public:
 	FVector DestPos;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "Grid")
-	int MaxStep;
+	int32 MaxStep;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "Grid")
-	int MaxSearchStep;
+	int32 MaxSearchStep;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "Grid")
 	bool bRemoveDest;
+
+	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "Grid")
+	int32 ExtraFlags;
 };
 
 /**
