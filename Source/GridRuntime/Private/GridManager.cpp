@@ -238,6 +238,7 @@ bool AGridManager::FindPath(const FGridPathFindingRequest& Request, TArray<UGrid
 			while (Result.Num() > MaxStep + 1)
 			{
 				Result.Pop();
+				Succ = false;
 			}
 		}
 	}
