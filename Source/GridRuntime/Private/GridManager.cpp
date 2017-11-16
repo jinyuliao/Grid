@@ -243,13 +243,13 @@ private:
 	UGrid* Goal;
 	UGridPathFinder* PathFinder;
 
-	friend class BidirectionalAStar;
+	friend class FBidirectionalAStar;
 };
 
-class BidirectionalAStar
+class FBidirectionalAStar
 {
 public:
-	BidirectionalAStar(UGrid* _Start, UGrid* _Goal, UGridPathFinder* _PathFinder)
+	FBidirectionalAStar(UGrid* _Start, UGrid* _Goal, UGridPathFinder* _PathFinder)
 		:ForwardAStar(_Start, _Goal, _PathFinder), BackwardAStar(_Goal, _Start, _PathFinder, true), Succ(false), IntersectGrid(nullptr)
 	{}
 
@@ -308,15 +308,15 @@ bool AGridManager::FindPath(const FGridPathFindingRequest& Request, TArray<UGrid
 	UGrid* Start = GetGridByPosition(Request.StartPos);
 	UGrid* Goal = GetGridByPosition(Request.DestPos);
 
-	BidirectionalAStar BidirAStar(Start, Goal, PathFinder.Obj);
+	FBidirectionalAStar BidirectionalAStar(Start, Goal, PathFinder.Obj);
 
 	int32 Step = 0;
 	while (!Succ)
 	{
-		if (!BidirAStar.Step())
+		if (!BidirectionalAStar.Step())
 			break;
 
-		Succ = BidirAStar.Succ;
+		Succ = BidirectionalAStar.Succ;
 
 		if (++Step > Request.MaxSearchStep)
 		{
@@ -327,7 +327,7 @@ bool AGridManager::FindPath(const FGridPathFindingRequest& Request, TArray<UGrid
 
 	if (Succ)
 	{
-		BidirAStar.CollectPath(Result);
+		BidirectionalAStar.CollectPath(Result);
 
 		if (Request.bRemoveDest)
 		{
