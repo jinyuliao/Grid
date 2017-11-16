@@ -70,6 +70,10 @@ public:
 	virtual bool IsReachable_Implementation(UGrid* Start, UGrid* Dest);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Grid")
-	int GetCost(UGrid* From, UGrid* To);
-	virtual int GetCost_Implementation(UGrid* From, UGrid* To) { return 1; };
+	int32 GetCost(UGrid* From, UGrid* To);
+	virtual int32 GetCost_Implementation(UGrid* From, UGrid* To) { return 1; };
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Grid")
+	int32 Heuristic(UGrid* From, UGrid* To);
+	virtual int32 Heuristic_Implementation(UGrid* From, UGrid* To);
 };

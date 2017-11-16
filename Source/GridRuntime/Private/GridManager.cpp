@@ -179,7 +179,7 @@ public:
 			{
 				GCost.Add(Next, NewCost);
 
-				FCost.Add(Next, NewCost + (Reversed ? PathFinder->GetCost(Goal, Next) : PathFinder->GetCost(Next, Goal)));
+				FCost.Add(Next, NewCost + (Reversed ? PathFinder->Heuristic(Goal, Next) : PathFinder->Heuristic(Next, Goal)));
 
 				if (!OpenSet.Contains(Next))
 					OpenSet.HeapPush(Next, Comparer);

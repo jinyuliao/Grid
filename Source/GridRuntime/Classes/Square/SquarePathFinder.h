@@ -13,5 +13,5 @@ public:
 	USquarePathFinder() {};
 	virtual ~USquarePathFinder() {};
 
-	virtual int GetCost_Implementation(UGrid* From, UGrid* To) override;
+	virtual int32 GetCost_Implementation(UGrid* From, UGrid* To) override;
 };

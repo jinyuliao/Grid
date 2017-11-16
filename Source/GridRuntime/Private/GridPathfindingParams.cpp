@@ -41,3 +41,8 @@ bool UGridPathFinder::IsReachable_Implementation(UGrid* Start, UGrid* Dest)
 {
 	return !Dest->IsEmpty();
 }
+
+int32 UGridPathFinder::Heuristic_Implementation(UGrid* From, UGrid* To)
+{
+	return GetCost(From, To);
+}
