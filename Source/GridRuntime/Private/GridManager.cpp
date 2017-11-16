@@ -135,10 +135,8 @@ class FAStar
 {
 public:
 	FAStar(UGrid* _Start, UGrid* _Goal, UGridPathFinder* _PathFinder, bool _Reversed = false)
-		: Start(_Start), Goal(_Goal), PathFinder(_PathFinder), Reversed(_Reversed)
+		: Start(_Start), Goal(_Goal), PathFinder(_PathFinder), Reversed(_Reversed), Succ(false)
 	{
-		Succ = false;
-
 		Comparer.FCost = &FCost;
 
 		GCost.Add(Start, 0);
@@ -219,9 +217,6 @@ public:
 	}
 
 	bool Succ;
-
-	TMap<UGrid*, UGrid*> CameFrom;
-
 private:
 	struct FComparer
 	{
@@ -239,6 +234,7 @@ private:
 	TSet<UGrid*> CloseSet;
 	TMap<UGrid*, int32> FCost;
 	TMap<UGrid*, int32> GCost;
+	TMap<UGrid*, UGrid*> CameFrom;
 	UGrid* Start;
 	UGrid* Goal;
 	UGridPathFinder* PathFinder;
