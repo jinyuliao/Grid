@@ -16,6 +16,8 @@ public:
 	UGridDecalPainter();
 	virtual ~UGridDecalPainter();
 	
+	virtual void TickImpl_Implementation(float DeltaTime);
+
 	virtual void UpdateGridState_Implementation(UGrid* Grid) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GridDecalPainter")
@@ -24,6 +26,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridDecalPainter")
 	UMaterialInterface* GetDecalMaterial(UGrid* Grid);
 	virtual UMaterialInterface* GetDecalMaterial_Implementation(UGrid* Grid);
+
+protected:
+	virtual void UpdateDecal(UGrid* Grid);
 
 protected:
 	UPROPERTY()

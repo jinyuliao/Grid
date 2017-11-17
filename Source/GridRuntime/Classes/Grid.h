@@ -59,9 +59,6 @@ public:
 	EGridType GridType;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
-	FIntVector Coord;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Grid")
 	FBoxSphereBounds Bounds;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
@@ -73,7 +70,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
 	AGridManager* GridManager;
 
-	void GridInfoChanged();
+	FIntVector Coord;
 
 protected:
 	bool bVisible;

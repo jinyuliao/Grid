@@ -3,10 +3,9 @@
 UGridPainter::UGridPainter()
 {
 	GridManager = nullptr;
-	bIsTickable = false;
+	bIsTickable = true;
 	TickInterval = 0.1f;
 	LastTickTime = 0.f;
-	bGridStateDirty = false;
 }
 
 UGridPainter::~UGridPainter()
@@ -63,8 +62,6 @@ void UGridPainter::UpdateGridState_Implementation(UGrid* Grid)
 	{
 		VisibleGrids.Remove(Grid);
 	}
-
-	bGridStateDirty = true;
 }
 
 void UGridPainter::TickImpl_Implementation(float DeltaTime)

@@ -52,8 +52,5 @@ protected:
 
 	float LastTickTime;
 
-	UPROPERTY(BlueprintReadWrite, Category = "GridPainter")
-	bool bGridStateDirty;
-
 	TStatId StatId;
 };

@@ -67,8 +67,3 @@ FIntVector UGrid::GetCoord() const
 {
 	return Coord;
 }
-
-void UGrid::GridInfoChanged()
-{
-	GridManager->GetGridPainter()->UpdateGridState(this);
-}

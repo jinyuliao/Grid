@@ -26,7 +26,8 @@ namespace UnrealBuildTool.Rules
 					"CoreUObject",
                     "Engine",
                     "AIModule",
-                    "RenderCore"
+                    "RenderCore",
+                    "GameplayTags"
 					// ... add other public dependencies that you statically link with here ...
 				}
 				);

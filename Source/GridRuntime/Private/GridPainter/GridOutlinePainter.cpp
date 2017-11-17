@@ -27,12 +27,7 @@ void UGridOutlinePainter::SetGridManager(AGridManager* NewGridManager)
 
 void UGridOutlinePainter::TickImpl_Implementation(float DeltaTime)
 {
-	if (bGridStateDirty)
-	{
-		GridOutlineComp->UpdateGridInfo();
-
-		bGridStateDirty = false;
-	}
+	GridOutlineComp->UpdateGridInfo();
 }
 
 void UGridOutlinePainter::GetColorPriority_Implementation(TArray<FLinearColor>& Colors)
