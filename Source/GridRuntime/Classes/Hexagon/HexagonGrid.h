@@ -18,10 +18,4 @@ public:
 	virtual FVector GetCenter() const override;
 
 	virtual void SetGridSize(float Size) override;
-
-protected:
-	// for path finding
-	int HeuristicValue;
-
-	friend class AGridManager;
 };

@@ -31,17 +31,17 @@ FVector UGridUtilities::CalcGridDecalSize(EGridType GridType, float GridSize)
 	}
 }
 
-FIntVector UGridUtilities::SubIntVector(const FIntVector& L, const FIntVector& R)
+FIntVector UGridUtilities::Subtract_IntVectorIntVector(const FIntVector& L, const FIntVector& R)
 {
 	return L - R;
 }
 
-FIntVector UGridUtilities::AddIntVector(const FIntVector& L, const FIntVector& R)
+FIntVector UGridUtilities::Add_IntVectorIntVector(const FIntVector& L, const FIntVector& R)
 {
 	return L + R;
 }
 
-FIntVector UGridUtilities::IntVectorMulInt(const FIntVector& L, int R)
+FIntVector UGridUtilities::Multiply_IntVectorInt(const FIntVector& L, int R)
 {
 	return L * R;
 }
