@@ -39,7 +39,7 @@ float UGrid::GetGridSize() const
 	return GridSize;
 }
 
-bool UGrid::Equal(UGrid* R)
+bool UGrid::Equal(const UGrid* R) const
 {
 	return Coord == R->Coord && FMath::Abs(Height - R->Height) <= FLT_EPSILON;
 }

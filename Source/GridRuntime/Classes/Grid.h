@@ -38,7 +38,7 @@ public:
 	virtual float GetGridSize() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Grid")
-	virtual bool Equal(UGrid* R);
+	virtual bool Equal(const UGrid* R) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Grid")
 	virtual void SetVisibility(bool NewVisibility);

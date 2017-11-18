@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Math", meta = (DisplayName = "IntVector * integer", CompactNodeTitle = "*", Keywords = "* multiply"))
 	static FIntVector Multiply_IntVectorInt(const FIntVector& L, int R);
 
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Equal (Grid)", CompactNodeTitle = "==", Keywords = "== equal"), Category = "Utilities")
+	static bool EqualEqual_GridGrid(const UGrid* A, const UGrid* B);
+
 	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
 	static bool GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor = FLinearColor::Red, FLinearColor TraceHitColor = FLinearColor::Green, float DrawTime = 5.0f);
 
