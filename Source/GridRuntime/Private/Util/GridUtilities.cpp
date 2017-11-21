@@ -51,6 +51,11 @@ bool UGridUtilities::EqualEqual_GridGrid(const UGrid* A, const UGrid* B)
 	return A->Equal(B);
 }
 
+bool UGridUtilities::NotEqual_GridGrid(const UGrid* A, const UGrid* B)
+{
+	return !A->Equal(B);
+}
+
 bool UGridUtilities::GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor, FLinearColor TraceHitColor, float DrawTime)
 {
 	FVector Start = Grid->GetCenter() + FVector(0.f, 0.f, TraceDistance / 2.f);

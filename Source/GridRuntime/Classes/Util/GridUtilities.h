@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "Equal (Grid)", CompactNodeTitle = "==", Keywords = "== equal"), Category = "Utilities")
 	static bool EqualEqual_GridGrid(const UGrid* A, const UGrid* B);
 
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Not Equal (Grid)", CompactNodeTitle = "!=", Keywords = "!= not equal"), Category = "Utilities")
+	static bool NotEqual_GridGrid(const UGrid* A, const UGrid* B);
+
 	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
 	static bool GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor = FLinearColor::Red, FLinearColor TraceHitColor = FLinearColor::Green, float DrawTime = 5.0f);
 
