@@ -15,6 +15,8 @@ UGridNavigationComponent::UGridNavigationComponent()
 	FollowingPathIndex = 0;
 	bIsMoving = false;
 
+	NavMode = EGridNavMode::GridBased;
+
 	AgentClasses.Add(UDefaultGridNavigationAgent::StaticClass());
 }
 
@@ -104,7 +106,7 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 
 	bIsMoving = true;
 
-	MoveToNextGrid();
+	MoveToNext();
 
 	return true;
 }
@@ -112,6 +114,19 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 bool UGridNavigationComponent::IsMoving()
 {
 	return bIsMoving;
+}
+
+bool UGridNavigationComponent::MoveToNext()
+{
+	switch (NavMode)
+	{
+	case EGridNavMode::GridBased:
+		return MoveToNextGrid();
+	case EGridNavMode::Free:
+		return MoveToNextPoint();
+	default:
+		return false;
+	}
 }
 
 bool UGridNavigationComponent::MoveToNextGrid()
@@ -126,15 +141,7 @@ bool UGridNavigationComponent::MoveToNextGrid()
 	UGrid* CurrGrid = GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
 	UGrid* NextGrid = CurrentFollowingPath[FollowingPathIndex];
 
-	UGridNavigationAgent* Agent = nullptr;
-	for (int i = 0; i < Agents.Num(); ++i)
-	{
-		if (Agents[i]->Check(OwnerPawn, CurrGrid, NextGrid))
-		{
-			Agent = Agents[i];
-			break;
-		}
-	}
+	UGridNavigationAgent* Agent = FindAgent(CurrGrid, NextGrid);
 
 	if (Agent == nullptr)
 	{
@@ -147,20 +154,73 @@ bool UGridNavigationComponent::MoveToNextGrid()
 	return true;
 }
 
+bool UGridNavigationComponent::MoveToNextPoint()
+{
+	++FollowingPathIndex;
+
+	if (FollowingPathIndex >= CurrentFollowingPath.Num())
+		return false;
+
+	AGridManager* GridManager = IGridPawnInterface::Execute_GetGridManager(OwnerPawn);
+
+	UGrid* CurrGrid = GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
+	UGrid* NextGrid = CurrentFollowingPath[FollowingPathIndex];
+
+	UGridNavigationAgent* Agent = FindAgent(CurrGrid, NextGrid);
+	
+	if (Agent == nullptr)
+	{
+		LOG_ERROR(TEXT("UGridNavigationComponent::MoveToNextGrid can't find proper agent"));
+		return false;
+	}
+
+	if (Cast<UDefaultGridNavigationAgent>(Agent) != nullptr)
+	{
+		int i;
+		for (i = FollowingPathIndex; i < CurrentFollowingPath.Num() - 1; ++i)
+		{
+			if (!Agent->Check(OwnerPawn, CurrentFollowingPath[i], CurrentFollowingPath[i + 1]))
+				break;
+		}
+
+		FollowingPathIndex = i;
+		NextGrid = CurrentFollowingPath[FollowingPathIndex];
+	}
+
+	Agent->RequestMove(OwnerPawn, CurrGrid, NextGrid);
+
+	return true;
+}
+
+UGridNavigationAgent* UGridNavigationComponent::FindAgent(UGrid* Start, UGrid* Goal)
+{
+	UGridNavigationAgent* Agent = nullptr;
+	for (int i = 0; i < Agents.Num(); ++i)
+	{
+		if (Agents[i]->Check(OwnerPawn, Start, Goal))
+		{
+			Agent = Agents[i];
+			break;
+		}
+	}
+	return Agent;
+}
+
 void UGridNavigationComponent::OnMoveCompleted(APawn* Pawn, bool Succ)
 {
 	if (Succ)
 	{
 		if (FollowingPathIndex < CurrentFollowingPath.Num() - 1)
 		{
-			OnArrivalNewGrid.Broadcast(this);
+			if (NavMode == EGridNavMode::GridBased)
+				OnArrivalNewGrid.Broadcast(this);
 		}
 		else
 		{
 			OnArrivalGoal.Broadcast(this);
 		}
 
-		if (!MoveToNextGrid())
+		if (!MoveToNext())
 		{
 			bIsMoving = false;
 		}
