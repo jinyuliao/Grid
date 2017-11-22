@@ -29,7 +29,7 @@ public:
 	virtual void BeginPlay() override;
 
 	/**
-	*	@note make sure your character's "Max Acceleration" large enough for smooth moving
+	*	@note make sure character's "Max Acceleration" large enough for smooth moving
 	*/
 	UFUNCTION(BlueprintCallable, Category = "GridNavigationComponent")
 	virtual bool RequestMove(UGrid* DestGrid);
@@ -43,7 +43,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GridNavigationComponent")
 	FGridNavEventSignature OnArrivalGoal;
 
-	/** if you implement a new GridNavigationAgent, you should add that class to this Array */
+	/** if you implement a new GridNavigationAgent, add that class to this Array */
 	UPROPERTY(EditDefaultsOnly, Category = "Grid")
 	TArray<TSubclassOf<UGridNavigationAgent> > AgentClasses;
 

@@ -7,7 +7,7 @@
 
 /**
  * GridPainter is used for rendering grid in game world, the default painter is GridDecalPainter.
-   you can inherit from this class to customize grid rendering
+   Inherit from this class to customize grid rendering
  */
 UCLASS(Blueprintable, abstract)
 class GRIDRUNTIME_API UGridPainter : public UObject

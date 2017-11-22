@@ -44,7 +44,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual void GetGridsByCoord(const FIntVector& Coord, TArray<UGrid*>& Grids);
 
-	/** if you don't need multi-level grid support, you can use this function, otherwise using GetGridsByCoord*/
+	/** if you don't need multi-level grid support, this function can be used, otherwise using GetGridsByCoord*/
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual UGrid* GetGridByCoord(const FIntVector& Coord);
 

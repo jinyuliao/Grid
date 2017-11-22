@@ -37,8 +37,8 @@ public:
 };
 
 /**
-	Default pathfinder using manhattan distance to calculate cost, you can inherit from USquarePathFinder or UHexagonPathFinder 
-	to customize pathfinding
+	Default pathfinder using manhattan distance to calculate cost.
+	Inherit from USquarePathFinder or UHexagonPathFinder to customize pathfinding
 */
 UCLASS(Blueprintable)
 class GRIDRUNTIME_API UGridPathFinder : public UObject

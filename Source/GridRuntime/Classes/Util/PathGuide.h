@@ -54,11 +54,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PathGuide")
 	float LineBreakThreshold;
 
-	/** you should set GridType manually if you use SetCustomPoints, otherwise the decal will rendering incorrect */
+	/** set GridType manually if you use SetCustomPoints, otherwise the decal will rendering incorrect */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PathGuide")
 	EGridType GridType;
 
-	/** you should set GridSize manually if you use SetCustomPoints, otherwise the decal will rendering incorrect */
+	/** set GridSize manually if you use SetCustomPoints, otherwise the decal will rendering incorrect */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "PathGuide")
 	float GridSize;
 

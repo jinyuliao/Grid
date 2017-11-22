@@ -17,15 +17,16 @@ Features
 * Blueprint support
 * Editor integration
 * Customizable classes
+* PathGuide for rendering path
 
 QuickStart
 ----------
 
 * Implement IGridPawnInterface(C++) or GridPawnInterface(Blueprint) in your pawn class
-* Set your pawn's default controller to AAIController or its subclass [#f1]_ 
+* Set pawn's default controller to AAIController or its subclass [#f1]_ 
 * Add UGridNavigationComponent to your pawn [#f2]_
 * Spawn GridManager at game startup [#f3]_
-* Write you game logic, most function you need is in GridManager
+* Write game logic, most function you need is in GridManager
 
 Customizable Classes
 --------------------
@@ -38,9 +39,9 @@ Customizable Classes
 Install
 -------
 
-#. clone this project to ${YourProject}/Plugins/
-#. generate project file
-#. compile
+#. Clone this project to ${YourProject}/Plugins/
+#. Generate project file
+#. Compile
 
 .. _SampleProject: https://github.com/jinyuliao/Sample_Grid
 

@@ -12,7 +12,7 @@ class GRIDRUNTIME_API UGridPawnInterface : public UInterface
 };
 
 /**
-	Your pawn should implement this interface to using grid-based pathfinding and movement function
+	implement this interface to use grid-based pathfinding and movement
 */
 class GRIDRUNTIME_API IGridPawnInterface
 {

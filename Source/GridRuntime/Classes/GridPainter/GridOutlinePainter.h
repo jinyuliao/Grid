@@ -23,7 +23,7 @@ public:
 
 	/**
 	* Descending order. 
-	* @note when different grid with different color share one edge, we need this information to determine the color of the shared edge
+	* @note when different grid with different color share one edge, this array are used to determine the final color of the shared edge
 	* @note you MUST implement this method if you override 'GetColors'
 	*/
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridDecalPainter")

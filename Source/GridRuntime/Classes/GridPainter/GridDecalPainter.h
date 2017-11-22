@@ -5,7 +5,7 @@
 #include "GridDecalPainter.generated.h"
 
 /**
- * Default grid painter, using decal to visualize grid
+ * Default grid painter, using decal to visualize grids
  */
 UCLASS()
 class GRIDRUNTIME_API UGridDecalPainter : public UGridPainter

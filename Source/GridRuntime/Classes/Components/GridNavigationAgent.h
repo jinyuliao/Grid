@@ -7,7 +7,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGridNavAgentEvent, APawn*, Pawn, bool, Succ);
 
 /**
- * GridNavigationAgent is used to control the pawn's movement behavior, you can inherit from this class to implement special movement(jump, climb, etc)
+ * GridNavigationAgent is used to control the pawn's movement behavior.
+   inherit from this class to implement special movement(jump, climb, etc)
  */
 UCLASS(Blueprintable, abstract)
 class GRIDRUNTIME_API UGridNavigationAgent : public UObject
