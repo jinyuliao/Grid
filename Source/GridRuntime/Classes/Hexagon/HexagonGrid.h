@@ -18,4 +18,6 @@ public:
 	virtual FVector GetCenter() const override;
 
 	virtual void SetGridSize(float Size) override;
+
+	virtual void GetNeighbors_Implementation(TArray<UGrid*>& Grids) override;
 };

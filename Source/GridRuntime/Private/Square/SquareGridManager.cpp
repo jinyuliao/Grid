@@ -74,23 +74,6 @@ int ASquareGridManager::GetDistance(const UGrid* Start, const UGrid* Dest)
 	return FMath::Abs(Start->Coord.X - Dest->Coord.X) + FMath::Abs(Start->Coord.Y - Dest->Coord.Y);
 }
 
-void ASquareGridManager::GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids)
-{
-	const FIntVector Directions[] = { FIntVector(1, 0, 0), FIntVector(-1, 0, 0), FIntVector(0, 1, 0), FIntVector(0, -1, 0),};
-
-	Grids.Reset();
-
-	TArray<UGrid*> TmpGrids;
-
-	USquareGrid* Grid = Cast<USquareGrid>(Center);
-	for (int i = 0; i < 4; ++i)
-	{
-		GetGridsByCoord(Grid->Coord + Directions[i], TmpGrids);
-
-		Grids.Append(TmpGrids);
-	}
-}
-
 void ASquareGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid*>& Grids)
 {
 	Grids.Reset();

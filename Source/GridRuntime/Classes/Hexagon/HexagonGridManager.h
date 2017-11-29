@@ -47,8 +47,6 @@ public:
 
 	virtual int GetDistance(const UGrid* Start, const UGrid* Dest) override;
 
-	virtual void GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids) override;
-
 	virtual void ClearAllGridInfo() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Hexagon")

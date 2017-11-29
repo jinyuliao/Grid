@@ -184,22 +184,6 @@ UHexagonGrid* AHexagonGridManager::GetHexagonGridByPosition(const FVector& Posit
 	return Rtn;
 }
 
-void AHexagonGridManager::GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids)
-{
-	const FIntVector Directions[] = { FIntVector(1, -1, 0), FIntVector(1, 0, -1), FIntVector(0, 1, -1), FIntVector(-1, 1, 0), FIntVector(-1, 0, 1), FIntVector(0, -1, 1) };
-
-	Grids.Reset();
-
-	UHexagonGrid* Grid = Cast<UHexagonGrid>(Center);
-
-	TArray<UGrid*> TmpGrids;
-	for (int i = 0; i < 6; ++i)
-	{
-		GetGridsByCoord(Grid->Coord + Directions[i], TmpGrids);
-		Grids.Append(TmpGrids);
-	}
-}
-
 void AHexagonGridManager::CreateGrids(const FIntVector& Coord, FHexagonGridArray& GridArray)
 {
 	TArray<FHitResult> HitResults;

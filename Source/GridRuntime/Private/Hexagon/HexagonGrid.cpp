@@ -35,3 +35,17 @@ void UHexagonGrid::SetGridSize(float Size)
 		GridManager->GetGridPainter()->UpdateGridState(this);
 	}
 }
+
+void UHexagonGrid::GetNeighbors_Implementation(TArray<UGrid*>& Grids)
+{
+	const FIntVector Directions[] = { FIntVector(1, -1, 0), FIntVector(1, 0, -1), FIntVector(0, 1, -1), FIntVector(-1, 1, 0), FIntVector(-1, 0, 1), FIntVector(0, -1, 1) };
+
+	Grids.Reset();
+
+	TArray<UGrid*> TmpGrids;
+	for (int i = 0; i < 6; ++i)
+	{
+		GridManager->GetGridsByCoord(Coord + Directions[i], TmpGrids);
+		Grids.Append(TmpGrids);
+	}
+}

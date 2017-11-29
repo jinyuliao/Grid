@@ -54,11 +54,6 @@ void AGridManager::PostInitGridManager()
 	SetGridPainter(GridPainterClass);
 }
 
-void AGridManager::GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids)
-{
-	Grids.Empty();
-}
-
 void AGridManager::SetGridPainter(TSubclassOf<UGridPainter> PainterClass)
 {
 	if (GridPainter != nullptr)
@@ -163,7 +158,7 @@ public:
 		CloseSet.Add(Current);
 
 		TArray<UGrid*> Neighbors;
-		PathFinder->GridManager->GetNeighbors(Current, Neighbors);
+		Current->GetNeighbors(Neighbors);
 
 		for (int i = 0; i < Neighbors.Num(); ++i)
 		{

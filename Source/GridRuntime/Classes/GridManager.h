@@ -54,10 +54,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual void ClearAllGridInfo();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridManager")
-	void GetNeighbors(UGrid* Center, TArray<UGrid*>& Grids);
-	virtual void GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids);
-
 	//////////////////////////////////////////////////////////////////////////
 	// properties
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn=true), Category = "GridManager")

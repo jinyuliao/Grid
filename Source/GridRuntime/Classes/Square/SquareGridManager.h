@@ -38,8 +38,6 @@ public:
 
 	virtual int GetDistance(const UGrid* Start, const UGrid* Dest) override;
 
-	virtual void GetNeighbors_Implementation(UGrid* Center, TArray<UGrid*>& Grids) override;
-
 	virtual UGrid* GetGridByPosition(const FVector& Position) override;
 
 	virtual void GetGridsByCoord(const FIntVector& Coord, TArray<UGrid*>& Grids) override;

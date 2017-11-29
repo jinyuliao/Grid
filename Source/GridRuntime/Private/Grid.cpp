@@ -67,3 +67,8 @@ FIntVector UGrid::GetCoord() const
 {
 	return Coord;
 }
+
+void UGrid::GetNeighbors_Implementation(TArray<UGrid*>& Grids)
+{
+	Grids.Reset();
+}

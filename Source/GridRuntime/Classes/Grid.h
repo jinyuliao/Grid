@@ -55,6 +55,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid")
 	virtual FIntVector GetCoord() const;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Grid")
+	void GetNeighbors(TArray<UGrid*>& Grids);
+	virtual void GetNeighbors_Implementation(TArray<UGrid*>& Grids);
+
 	UPROPERTY(BlueprintReadOnly, Category = "Grid")
 	EGridType GridType;
 
