@@ -46,6 +46,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Grid")
 	virtual bool GetVisibility() const;
 
+	UFUNCTION(BlueprintCallable, Category = "GridManager")
+	virtual int GetDistance(const UGrid* Dest) const;
+
 	/**
 		if line trace test can't hit any WorldStatic object, then this grid is empty
 	*/

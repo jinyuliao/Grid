@@ -90,6 +90,11 @@ FBoxSphereBounds ULineComponent::CalcBounds(const FTransform& LocalToWorld) cons
 
 void ULineComponent::SetPoints(const TArray<FVector>& Points)
 {
+	if (SceneProxy == nullptr)
+	{
+		LOG_WARNING(TEXT("ULineComponent::SetPoints SceneProxy is null, your actor is hidden in game?"));
+		return;
+	}
 	FUpdateParams UpdateParams;
 	UpdateParams.SceneProxy = (FLineSceneProxy*)SceneProxy;
 	UpdateParams.Points = Points;
@@ -107,4 +112,9 @@ void ULineComponent::SetPoints(const TArray<FVector>& Points)
 
 	UpdateBounds();
 	MarkRenderTransformDirty();
+}
+
+void ULineComponent::Clear()
+{
+	SetPoints(TArray<FVector>());
 }

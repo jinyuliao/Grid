@@ -66,15 +66,12 @@ void ASquareGridManager::GetGridsByBound(const FBox& Bound, TArray<UGrid*>& Grid
 	}
 }
 
-int ASquareGridManager::GetDistance(const UGrid* Start, const UGrid* Dest)
+void ASquareGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid*>& Grids)
 {
-	if (Start == nullptr || Dest == nullptr)
-		return TNumericLimits<int32>::Max();
-
-	return FMath::Abs(Start->Coord.X - Dest->Coord.X) + FMath::Abs(Start->Coord.Y - Dest->Coord.Y);
+	GetSquareGridsByRange(Center, Range, Grids, false);
 }
 
-void ASquareGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid*>& Grids)
+void ASquareGridManager::GetSquareGridsByRange(UGrid* Center, int Range, TArray<UGrid*>& Grids, bool bDiagonal)
 {
 	Grids.Reset();
 
@@ -97,7 +94,7 @@ void ASquareGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid*
 			{
 				UGrid* Grid = TmpGrids[k];
 
-				if (GetDistance(Grid, Center) <= Range)
+				if (bDiagonal || Grid->GetDistance(Center) <= Range)
 				{
 					Grids.Add(Grid);
 				}
@@ -107,7 +104,7 @@ void ASquareGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid*
 
 	Grids.Sort([&](const UGrid& L, const UGrid& R)
 	{
-		return GetDistance(&L, Center) < GetDistance(&R, Center);
+		return L.GetDistance(Center) < R.GetDistance(Center);
 	});
 }
 

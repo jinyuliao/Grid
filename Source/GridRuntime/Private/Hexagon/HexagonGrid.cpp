@@ -36,6 +36,13 @@ void UHexagonGrid::SetGridSize(float Size)
 	}
 }
 
+int UHexagonGrid::GetDistance(const UGrid* Dest) const
+{
+	if (Dest == nullptr)
+		return TNumericLimits<int32>::Max();
+	return (FMath::Abs(Coord.X - Dest->Coord.X) + FMath::Abs(Coord.Y - Dest->Coord.Y) + FMath::Abs(Coord.Z - Dest->Coord.Z)) / 2;
+}
+
 void UHexagonGrid::GetNeighbors_Implementation(TArray<UGrid*>& Grids)
 {
 	const FIntVector Directions[] = { FIntVector(1, -1, 0), FIntVector(1, 0, -1), FIntVector(0, 1, -1), FIntVector(-1, 1, 0), FIntVector(-1, 0, 1), FIntVector(0, -1, 1) };

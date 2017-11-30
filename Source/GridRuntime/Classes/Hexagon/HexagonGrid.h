@@ -19,5 +19,7 @@ public:
 
 	virtual void SetGridSize(float Size) override;
 
+	virtual int GetDistance(const UGrid* Dest) const override;
+
 	virtual void GetNeighbors_Implementation(TArray<UGrid*>& Grids) override;
 };

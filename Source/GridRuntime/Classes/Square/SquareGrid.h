@@ -22,6 +22,8 @@ public:
 
 	virtual void GetNeighbors_Implementation(TArray<UGrid*>& Grids) override;
 
+	virtual int GetDistance(const UGrid* Dest) const override;
+
 	UFUNCTION(BlueprintCallable, Category = "SquareGrid")
 	virtual void GetSquareNeighbors(TArray<UGrid*>& Grids, bool bDiagonal = false);
 };

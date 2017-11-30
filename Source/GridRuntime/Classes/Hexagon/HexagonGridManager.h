@@ -45,8 +45,6 @@ public:
 
 	virtual void GetGridsByBound(const FBox& Bound, TArray<UGrid*>& Grids) override;
 
-	virtual int GetDistance(const UGrid* Start, const UGrid* Dest) override;
-
 	virtual void ClearAllGridInfo() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Hexagon")

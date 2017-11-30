@@ -58,6 +58,11 @@ bool UGrid::GetVisibility() const
 	return bVisible;
 }
 
+int UGrid::GetDistance(const UGrid* Dest) const
+{
+	return 0;
+}
+
 bool UGrid::IsEmpty() const
 {
 	return !GridInfo->HitResult.bBlockingHit;

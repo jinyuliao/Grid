@@ -11,13 +11,6 @@ AHexagonGridManager::~AHexagonGridManager()
 
 }
 
-int AHexagonGridManager::GetDistance(const UGrid* Start, const UGrid* Dest)
-{
-	if (Start == nullptr || Dest == nullptr)
-		return TNumericLimits<int32>::Max();
-	return (FMath::Abs(Start->Coord.X - Dest->Coord.X) + FMath::Abs(Start->Coord.Y - Dest->Coord.Y) + FMath::Abs(Start->Coord.Z - Dest->Coord.Z)) / 2;
-}
-
 void AHexagonGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid*>& Grids)
 {
 	Grids.Reset();
@@ -45,7 +38,7 @@ void AHexagonGridManager::GetGridsByRange(UGrid* Center, int Range, TArray<UGrid
 
 	Grids.Sort([&](const UGrid& L, const UGrid& R)
 	{
-		return GetDistance(&L, Center) < GetDistance(&R, Center);
+		return L.GetDistance(Center) < R.GetDistance(Center);
 	});
 }
 

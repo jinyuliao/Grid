@@ -27,9 +27,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual float GetGridSize() const;
 
-	UFUNCTION(BlueprintCallable, Category = "GridManager")
-	virtual int GetDistance(const UGrid* Start, const UGrid* Dest);
-
 	/** Grid-based pathfinding */
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual bool FindPath(const FGridPathFindingRequest& Request, TArray<UGrid*>& Result);

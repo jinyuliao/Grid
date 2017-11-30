@@ -36,8 +36,6 @@ public:
 
 	virtual void SetGridSize(float CellSize) override;
 
-	virtual int GetDistance(const UGrid* Start, const UGrid* Dest) override;
-
 	virtual UGrid* GetGridByPosition(const FVector& Position) override;
 
 	virtual void GetGridsByCoord(const FIntVector& Coord, TArray<UGrid*>& Grids) override;
@@ -50,6 +48,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SquareGridManager")
 	void GetSquareGridsByCoord(const FIntVector& Coord, TArray<USquareGrid*>& Grids);
+
+	UFUNCTION(BlueprintCallable, Category = "SquareGridManager")
+	void GetSquareGridsByRange(UGrid* Center, int Range, TArray<UGrid*>& Grids, bool bDiagonal = false);
 
 	UFUNCTION(BlueprintCallable, Category = "SquareGridManager")
 	USquareGrid* GetSquareGridByPosition(const FVector& Position);

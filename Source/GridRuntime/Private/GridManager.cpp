@@ -121,11 +121,6 @@ float AGridManager::GetGridSize() const
 	return GridSize;
 }
 
-int AGridManager::GetDistance(const UGrid* Start, const UGrid* Dest)
-{
-	return 0;
-}
-
 class FAStar
 {
 public:

@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(ClassGroup = (Util), Blueprintable, meta = (BlueprintSpawnableComponent))
 class GRIDRUNTIME_API ULineComponent : public UPrimitiveComponent
 {
 	GENERATED_BODY()
@@ -31,6 +31,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "LineComponent")
 	virtual void SetPoints(const TArray<FVector>& Points);
+
+	UFUNCTION(BlueprintCallable, Category = "LineComponent")
+	virtual void Clear();
 
 protected:
 	FBoxSphereBounds Bounds;
