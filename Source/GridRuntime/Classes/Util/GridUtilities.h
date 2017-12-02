@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
 	static bool GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor = FLinearColor::Red, FLinearColor TraceHitColor = FLinearColor::Green, float DrawTime = 5.0f);
 
+	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
+	static void GetBoundsByGridArray(const TArray<UGrid*>& Grids, FBoxSphereBounds& Bounds);
+
 	static uint64 GetUniqueIdByCoordinate(const FIntVector& Coord);
 
 	static FVector CalcGridDecalSize(EGridType GridType, float GridSize);

@@ -65,3 +65,16 @@ bool UGridUtilities::GridTraceSingleForObjects(UGrid* Grid, float TraceDistance,
 		, bTraceComplex, ActorsToIgnore, DrawDebugType, OutHit
 		, bIgnoreSelf, TraceColor, TraceHitColor, DrawTime);
 }
+
+void UGridUtilities::GetBoundsByGridArray(const TArray<UGrid*>& Grids, FBoxSphereBounds& Bounds)
+{
+	if (Grids.Num() == 0)
+		return;
+
+	Bounds = Grids[0]->Bounds;
+
+	for (int i = 1; i < Grids.Num(); ++i)
+	{
+		Bounds = Bounds + Grids[i]->Bounds;
+	}
+}
