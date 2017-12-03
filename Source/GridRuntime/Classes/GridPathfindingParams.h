@@ -25,7 +25,7 @@ public:
 	FVector DestPos;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "GridPathFindingRequest")
-	int32 MaxStep;
+	int32 MaxCost;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "GridPathFindingRequest")
 	int32 MaxSearchStep;
@@ -53,17 +53,23 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "GridPathFinder")
 	AGridManager* GridManager;
 
-	UPROPERTY(BlueprintReadOnly, Category = "GridPathFinder")
-	FGridPathFindingRequest Request;
+	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
+	UGrid* GetStartGrid() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	UGrid* GetStartGrid();
+	UGrid* GetDestGrid() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	UGrid* GetDestGrid();
+	AActor* GetSender() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	AActor* GetSender();
+	void GetStart(FVector& Start) const;
+
+	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
+	void GetDestination(FVector& Destination) const;
+
+	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
+	const FGameplayTagContainer& GetExtraTags() const;
 
 	/** If return false, the pawn can't move from 'Start' to 'Dest', the path has been blocked, and the cost will be ignore */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridPathFinder")
@@ -77,4 +83,6 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridPathFinder")
 	int32 Heuristic(UGrid* From, UGrid* To);
 	virtual int32 Heuristic_Implementation(UGrid* From, UGrid* To);
+
+	FGridPathFindingRequest Request;
 };

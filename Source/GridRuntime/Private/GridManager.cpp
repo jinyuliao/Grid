@@ -320,16 +320,87 @@ bool AGridManager::FindPath(const FGridPathFindingRequest& Request, TArray<UGrid
 			Result.Pop();
 		}
 
-		if (Request.MaxStep >= 0)
+		if (Request.MaxCost >= 0)
 		{
-			while (Result.Num() > Request.MaxStep + 1)
+			int32 Cost = 0;
+			int32 i;
+			for (i = 1; i < Result.Num(); ++i)
 			{
-				Result.Pop();
+				Cost += PathFinder->GetCost(Result[i - 1], Result[i]);
+
+				if (Cost > Request.MaxCost)
+					break;
+			}
+
+			if (i < Result.Num())
+			{
+				Result.RemoveAt(i, Result.Num() - i);
 				Succ = false;
 			}
 		}
 	}
 	return Succ;
+}
+
+bool AGridManager::GetReachableGrids(AActor* Sender, int32 MaxCost, FGameplayTagContainer ExtraTags, TArray<UGrid*>& Result)
+{
+	Result.Reset();
+
+	if (Sender == nullptr || MaxCost < 0)
+		return false;
+
+	auto PathFinder = SharedUObject<UGridPathFinder>(NewObject<UGridPathFinder>(this, PathFinderClass));
+	PathFinder->Request.Sender = Sender;
+	PathFinder->Request.MaxCost = MaxCost;
+	PathFinder->Request.ExtraTags = ExtraTags;
+	PathFinder->GridManager = this;
+
+	TQueue<UGrid*> OpenSet;
+	TSet<UGrid*> CloseSet;
+	TMap<UGrid*, int32> Cost;
+	UGrid* Start = GetGridByPosition(Sender->GetActorLocation());
+
+	OpenSet.Enqueue(Start);
+	Result.Add(Start);
+
+	Cost.Add(Start, 0);
+
+	while (!OpenSet.IsEmpty())
+	{
+		UGrid* Current;
+		OpenSet.Dequeue(Current);
+
+		CloseSet.Add(Current);
+
+		TArray<UGrid*> Neighbors;
+		Current->GetNeighbors(Neighbors);
+
+		for (int i = 0; i < Neighbors.Num(); ++i)
+		{
+			UGrid* Next = Neighbors[i];
+
+			PathFinder->Request.DestPos = Next->GetCenter();
+
+			if (CloseSet.Contains(Next) || !PathFinder->IsReachable(Current, Next))
+				continue;
+
+			int NewCost = Cost[Current] + PathFinder->GetCost(Current, Next);
+
+			if (NewCost > MaxCost)
+				continue;
+
+			Result.AddUnique(Next);
+
+			if (!Cost.Contains(Next) || NewCost < Cost[Next])
+			{
+				Cost.Add(Next, NewCost);
+
+				OpenSet.Enqueue(Next);
+			}
+		}
+	}
+
+	return Result.Num() > 0;
 }
 
 void AGridManager::GetGridsByBound(const FBox& Bound, TArray<UGrid*>& Grids)

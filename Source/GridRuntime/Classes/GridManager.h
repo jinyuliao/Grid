@@ -32,6 +32,9 @@ public:
 	virtual bool FindPath(const FGridPathFindingRequest& Request, TArray<UGrid*>& Result);
 
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
+	virtual bool GetReachableGrids(AActor* Sender, int32 MaxCost, FGameplayTagContainer ExtraTags, TArray<UGrid*>& Result);
+
+	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual void GetGridsByBound(const FBox& Bound, TArray<UGrid*>& Grids);
 
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
