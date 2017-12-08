@@ -4,6 +4,7 @@ Grid Plugin
 An UE4 plugin for grid-based game
 
 * SampleProject_
+* A more complicated project: SRPGTemplate_
 
 .. image:: https://github.com/jinyuliao/Grid/blob/master/docs/images/grid.png?raw=true
 
@@ -44,6 +45,7 @@ Install
 #. Compile
 
 .. _SampleProject: https://github.com/jinyuliao/Sample_Grid
+.. _SRPGTemplate: https://github.com/jinyuliao/SRPGTemplate
 
 .. [#f1] we need it to implement default grid-based movement
 .. [#f2] if you have custom UGridNavigationAgent, add it to Component's 'AgentClasses'
