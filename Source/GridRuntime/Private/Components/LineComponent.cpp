@@ -1,4 +1,5 @@
 #include "Components/LineComponent.h"
+#include "GridRuntimePCH.h"
 
 const static FName NAME_LineCompResourceNameForDebugging(TEXT("LineComponent"));
 

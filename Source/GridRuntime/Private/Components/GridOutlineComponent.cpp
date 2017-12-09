@@ -1,4 +1,5 @@
-#include "Components//GridOutlineComponent.h"
+#include "Components/GridOutlineComponent.h"
+#include "GridRuntimePCH.h"
 #include "GridPainter/GridOutlinePainter.h"
 #include "Square/SquareGridManager.h"
 #include "Hexagon/HexagonGridManager.h"

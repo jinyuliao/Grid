@@ -1,4 +1,5 @@
 #include "GridPainter/GridOutlinePainter.h"
+#include "GridManager.h"
 
 UGridOutlinePainter::UGridOutlinePainter()
 {

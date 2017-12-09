@@ -1,13 +1,13 @@
 #include "GridEditorCommands.h"
-#include "GridEditorPrivatePCH.h"
+#include "GridEditorPCH.h"
 #include "GridEditorMode.h"
 #include "SquareSettingsDetails.h"
 
 DEFINE_LOG_CATEGORY(GridEditor)
 
-#define LOCTEXT_NAMESPACE "GridEditorModule" 
-
 const FEditorModeID EM_GridEditor(TEXT("EM_GridEditor"));
+
+#define LOCTEXT_NAMESPACE "GridEditorModule" 
 
 class FGridEditor : public IGridEditor
 {

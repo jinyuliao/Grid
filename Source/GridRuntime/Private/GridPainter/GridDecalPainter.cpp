@@ -1,8 +1,10 @@
 #include "GridPainter/GridDecalPainter.h"
 #include "Util/GridUtilities.h"
+#include "GridManager.h"
 #include "Square/SquareGrid.h"
 #include "Hexagon/HexagonGrid.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/DecalComponent.h"
 
 UGridDecalPainter::UGridDecalPainter()
 {

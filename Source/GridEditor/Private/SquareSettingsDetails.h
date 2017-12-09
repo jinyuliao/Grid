@@ -5,6 +5,8 @@
 #include "IDetailCustomization.h"
 #include "PropertyHandle.h"
 
+class FEdModeGridEditor;
+
 class FSquareSettingsDetails : public IDetailCustomization
 {
 public:

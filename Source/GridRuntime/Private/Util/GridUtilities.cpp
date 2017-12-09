@@ -1,4 +1,6 @@
 #include "Util/GridUtilities.h"
+#include "GridRuntimePCH.h"
+#include "GridManager.h"
 
 uint64 UGridUtilities::GetUniqueIdByCoordinate(const FIntVector& Coord)
 {

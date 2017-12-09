@@ -1,5 +1,5 @@
 #include "Components/GridNavigationComponent.h"
-#include "GridRuntimePrivatePCH.h"
+#include "GridRuntimePCH.h"
 #include "Grid.h"
 #include "GridManager.h"
 #include "Interfaces/GridPawnInterface.h"

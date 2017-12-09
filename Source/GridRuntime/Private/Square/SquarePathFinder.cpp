@@ -1,4 +1,5 @@
 #include "Square/SquarePathFinder.h"
+#include "Grid.h"
 
 int32 USquarePathFinder::GetCost_Implementation(UGrid* From, UGrid* To)
 {

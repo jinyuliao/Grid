@@ -14,6 +14,8 @@
 #include "Square/SquareGridManager.h"
 #include "Square/SquarePathFinder.h"
 
+#define LOG_INFO(FMT, ...) UE_LOG(GridEditor, Display, (FMT), ##__VA_ARGS__)
 #define LOG_WARNING(FMT, ...) UE_LOG(GridEditor, Warning, (FMT), ##__VA_ARGS__)
 #define LOG_ERROR(FMT, ...) UE_LOG(GridEditor, Error, (FMT), ##__VA_ARGS__)
 
+extern const FEditorModeID EM_GridEditor;

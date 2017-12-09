@@ -6,6 +6,9 @@
 #include "SlateOptMacros.h"
 #include "DesktopPlatformModule.h"
 #include "SlateApplication.h"
+#include "EditorModeManager.h"
+
+extern const FEditorModeID EM_GridEditor;
 
 #define LOCTEXT_NAMESPACE "SquareSettingsDetails"
 

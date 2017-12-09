@@ -1,9 +1,11 @@
 #include "SGridEditor.h"
+#include "GridEditorPCH.h"
 #include "GridEditorMode.h"
 #include "SlateOptMacros.h"
 #include "PropertyEditorModule.h"
-
-extern const FEditorModeID EM_GridEditor;
+#include "EditorModeManager.h"
+#include "GridEditorCommands.h"
+#include "GridEditorMode.h"
 
 #define LOCTEXT_NAMESPACE "GridEditor"
 

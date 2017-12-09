@@ -1,4 +1,5 @@
 #include "Hexagon/HexagonGrid.h"
+#include "GridManager.h"
 
 UHexagonGrid::UHexagonGrid()
 {

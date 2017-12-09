@@ -1,4 +1,5 @@
 #include "Hexagon/HexagonGridManager.h"
+#include "GridRuntimePCH.h"
 #include "Util/GridUtilities.h"
 
 AHexagonGridManager::AHexagonGridManager()

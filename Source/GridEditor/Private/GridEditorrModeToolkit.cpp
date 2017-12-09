@@ -1,6 +1,7 @@
 #include "GridEditorModeToolkit.h"
 #include "SGridEditor.h"
 #include "GridEditorCommands.h"
+#include "GridEditorMode.h"
 
 #define LOCTEXT_NAMESPACE "FGridEditorToolkit"
 

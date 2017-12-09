@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Grid.h"
 #include "GridPathfindingParams.h"
 #include "HexagonPathFinder.generated.h"
 

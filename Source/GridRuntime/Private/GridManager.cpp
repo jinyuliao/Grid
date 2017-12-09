@@ -1,5 +1,7 @@
 #include "GridManager.h"
+#include "GridRuntimePCH.h"
 #include "GridPainter/GridDecalPainter.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 template <typename T>
 struct SharedUObject

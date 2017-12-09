@@ -1,5 +1,5 @@
 #include "Components/DefaultGridNavigationAgent.h"
-#include "GridRuntimePrivatePCH.h"
+#include "GridRuntimePCH.h"
 #include "AI/Navigation/NavigationSystem.h"
 #include "AI/Navigation/NavigationPath.h"
 
