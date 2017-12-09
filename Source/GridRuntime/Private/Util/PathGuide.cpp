@@ -25,6 +25,8 @@ APathGuide::APathGuide()
 	GridType = EGridType::Unknown;
 	GridSize = 100.f;
 	DecalSizeScale = 0.98f;
+
+	SetRootComponent(PathLineComponent);
 }
 
 APathGuide::~APathGuide()
