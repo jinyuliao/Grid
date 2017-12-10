@@ -44,6 +44,8 @@ Install
 #. Generate project file
 #. Compile
 
+Donate
+------
 
 .. image:: docs/images/donate.png
     :target: https://jinyuliao.github.io/blog/html/pages/donate.html
