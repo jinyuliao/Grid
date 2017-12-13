@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Tickable.h"
 #include "Grid.h"
 #include "GridPainter.generated.h"
 

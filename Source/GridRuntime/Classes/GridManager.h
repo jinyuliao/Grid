@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
 #include "GridPathfindingParams.h"
 #include "GridPainter/GridPainter.h"
 #include "GridManager.generated.h"

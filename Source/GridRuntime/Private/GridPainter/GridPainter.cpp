@@ -1,4 +1,5 @@
 #include "GridPainter/GridPainter.h"
+#include "Engine/World.h"
 #include "GridManager.h"
 
 UGridPainter::UGridPainter()

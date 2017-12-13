@@ -2,6 +2,7 @@
 #include "GridRuntimePCH.h"
 #include "GridPainter/GridDecalPainter.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Containers/Queue.h"
 
 template <typename T>
 struct SharedUObject

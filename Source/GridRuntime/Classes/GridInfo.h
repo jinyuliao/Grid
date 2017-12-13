@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/EngineTypes.h"
 #include "GameplayTagContainer.h"
 #include "GridInfo.generated.h"
 

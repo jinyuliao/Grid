@@ -1,5 +1,7 @@
 #include "Components/LineComponent.h"
 #include "GridRuntimePCH.h"
+#include "PrimitiveSceneProxy.h"
+#include "SceneManagement.h"
 
 const static FName NAME_LineCompResourceNameForDebugging(TEXT("LineComponent"));
 

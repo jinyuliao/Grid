@@ -1,5 +1,7 @@
 #include "Components/GridOutlineComponent.h"
 #include "GridRuntimePCH.h"
+#include "PrimitiveSceneProxy.h"
+#include "SceneManagement.h"
 #include "GridPainter/GridOutlinePainter.h"
 #include "Square/SquareGridManager.h"
 #include "Hexagon/HexagonGridManager.h"
@@ -400,20 +402,20 @@ FPrimitiveSceneProxy* UGridOutlineComponent::CreateSceneProxy()
 
 FBoxSphereBounds UGridOutlineComponent::CalcBounds(const FTransform& LocalToWorld) const
 {
-	FBoxSphereBounds Bounds(ForceInitToZero);
+	FBoxSphereBounds Rtn(ForceInitToZero);
 
 	UGridOutlinePainter* GridPainter = Cast<UGridOutlinePainter>(GetOuter());
 
 	if (GridPainter == nullptr)
-		return Bounds;
+		return Rtn;
 
 	for (int i = 0; i < GridPainter->VisibleGrids.Num(); ++i)
 	{
 		UGrid* Grid = GridPainter->VisibleGrids[i];
 
-		Bounds = Bounds + Grid->Bounds;
+		Rtn = Rtn + Grid->Bounds;
 	}
-	return Bounds;
+	return Rtn;
 }
 
 void UGridOutlineComponent::UpdateGridInfo()
