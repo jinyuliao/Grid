@@ -4,6 +4,7 @@
 #include "GridManager.h"
 #include "Interfaces/GridPawnInterface.h"
 #include "Components/DefaultGridNavigationAgent.h"
+#include "Util/GridUtilities.h"
 
 UGridNavigationComponent::UGridNavigationComponent()
 {
@@ -88,16 +89,15 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 		return false;
 	}
 
-	FGridPathFindingRequest Request;
+	FGridPathfindingRequest Request;
 	TArray<UGrid*> Result;
 
 	Request.Sender = OwnerPawn;
-	Request.DestPos = DestGrid->GetCenter();
-	Request.StartPos = OwnerPawn->GetActorLocation();
+	Request.Destination = DestGrid;
+	Request.Start = DestGrid->GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
 
-	bool Succ = GridManager->FindPath(Request, CurrentFollowingPath);
-
-	if (!Succ)
+	GridManager->GetPathFinder()->Reset();
+	if (!UGridUtilities::FindPath(Request, GridManager->GetPathFinder(), CurrentFollowingPath))
 	{
 		return false;
 	}
@@ -111,7 +111,7 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 	return true;
 }
 
-bool UGridNavigationComponent::IsMoving()
+bool UGridNavigationComponent::IsMoving() const
 {
 	return bIsMoving;
 }

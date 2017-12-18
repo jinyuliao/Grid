@@ -8,21 +8,21 @@ class UGrid;
 class AGridManager;
 
 USTRUCT(BlueprintType)
-struct GRIDRUNTIME_API FGridPathFindingRequest
+struct GRIDRUNTIME_API FGridPathfindingRequest
 {
 	GENERATED_BODY()
 
 public:
-	FGridPathFindingRequest();
+	FGridPathfindingRequest();
 
 	UPROPERTY(BlueprintReadWrite, Category = "GridPathFindingRequest")
 	AActor* Sender;
 
 	UPROPERTY(BlueprintReadWrite, Category = "GridPathFindingRequest")
-	FVector StartPos;
+	UGrid* Start;
 
 	UPROPERTY(BlueprintReadWrite, Category = "GridPathFindingRequest")
-	FVector DestPos;
+	UGrid* Destination;
 
 	UPROPERTY(BlueprintReadWrite, AdvancedDisplay, Category = "GridPathFindingRequest")
 	int32 MaxCost;
@@ -50,23 +50,17 @@ public:
 	UGridPathFinder();
 	virtual ~UGridPathFinder();
 
-	UPROPERTY(BlueprintReadOnly, Category = "GridPathFinder")
-	AGridManager* GridManager;
+	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
+	UGrid* GetStart() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	UGrid* GetStartGrid() const;
-
-	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	UGrid* GetDestGrid() const;
+	UGrid* GetDestination() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
 	AActor* GetSender() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	void GetStart(FVector& Start) const;
-
-	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
-	void GetDestination(FVector& Destination) const;
+	AGridManager* GetGridManager() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GridPathFinder")
 	const FGameplayTagContainer& GetExtraTags() const;
@@ -84,5 +78,12 @@ public:
 	int32 Heuristic(UGrid* From, UGrid* To);
 	virtual int32 Heuristic_Implementation(UGrid* From, UGrid* To);
 
-	FGridPathFindingRequest Request;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "GridPathFinder")
+	void Reset();
+	virtual void Reset_Implementation() {};
+
+	FGridPathfindingRequest Request;
+
+	UPROPERTY()
+	AGridManager* GridManager;
 };

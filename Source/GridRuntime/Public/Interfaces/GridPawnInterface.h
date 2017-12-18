@@ -21,6 +21,6 @@ class GRIDRUNTIME_API IGridPawnInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Grid")
-	AGridManager* GetGridManager();
-	virtual AGridManager* GetGridManager_Implementation();
+	AGridManager* GetGridManager() const;
+	virtual AGridManager* GetGridManager_Implementation() const;
 };

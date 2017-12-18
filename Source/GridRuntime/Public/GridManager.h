@@ -28,13 +28,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual float GetGridSize() const;
 
-	/** Grid-based pathfinding */
-	UFUNCTION(BlueprintCallable, Category = "GridManager")
-	virtual bool FindPath(const FGridPathFindingRequest& Request, TArray<UGrid*>& Result);
-
-	UFUNCTION(BlueprintCallable, Category = "GridManager")
-	virtual bool GetReachableGrids(AActor* Sender, int32 MaxCost, FGameplayTagContainer ExtraTags, TArray<UGrid*>& Result);
-
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual void GetGridsByBound(const FBox& Bound, TArray<UGrid*>& Grids);
 
@@ -54,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual void ClearAllGridInfo();
+
+	UFUNCTION(BlueprintCallable, Category = "GridManager")
+	UGridPathFinder* GetPathFinder() const;
 
 	//////////////////////////////////////////////////////////////////////////
 	// properties
@@ -84,6 +80,9 @@ protected:
 
 	UPROPERTY()
 	UGridPainter* GridPainter;
+
+	UPROPERTY()
+	UGridPathFinder* PathFinder;
 
 #ifdef WITH_EDITOR
 	friend class FEdModeGridEditor;

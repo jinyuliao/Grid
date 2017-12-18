@@ -1,34 +1,31 @@
 #include "GridPathfindingParams.h"
 #include "GridManager.h"
 
-FGridPathFindingRequest::FGridPathFindingRequest()
+FGridPathfindingRequest::FGridPathfindingRequest()
 {
 	bRemoveDest = false;
 	MaxCost = -1;
 	MaxSearchStep = 1000;
+	Start = Destination = nullptr;
 }
 
 UGridPathFinder::UGridPathFinder()
 {
-
+	GridManager = nullptr;
 }
 
 UGridPathFinder::~UGridPathFinder()
 {
 }
 
-UGrid* UGridPathFinder::GetStartGrid() const
+UGrid* UGridPathFinder::GetStart() const
 {
-	check(GridManager != nullptr);
-
-	return GridManager->GetGridByPosition(Request.StartPos);
+	return Request.Start;
 }
 
-UGrid* UGridPathFinder::GetDestGrid() const
+UGrid* UGridPathFinder::GetDestination() const
 {
-	check(GridManager != nullptr);
-
-	return GridManager->GetGridByPosition(Request.DestPos);
+	return Request.Destination;
 }
 
 AActor* UGridPathFinder::GetSender() const
@@ -36,14 +33,9 @@ AActor* UGridPathFinder::GetSender() const
 	return Request.Sender;
 }
 
-void UGridPathFinder::GetStart(FVector& Start) const
+AGridManager* UGridPathFinder::GetGridManager() const
 {
-	Start = Request.StartPos;
-}
-
-void UGridPathFinder::GetDestination(FVector& Destination) const
-{
-	Destination = Request.DestPos;
+	return GridManager;
 }
 
 const FGameplayTagContainer& UGridPathFinder::GetExtraTags() const
