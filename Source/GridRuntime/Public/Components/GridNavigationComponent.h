@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "Components/ActorComponent.h"
 #include "Components/GridNavigationAgent.h"
+#include "GridPathfindingParams.h"
 #include "GridNavigationComponent.generated.h"
 
 class UGrid;
@@ -30,9 +31,10 @@ public:
 
 	/**
 	*	@note make sure character's "Max Acceleration" large enough for smooth moving
+		@note if PathFinder == null, GridManager's default PathFinder will be used
 	*/
 	UFUNCTION(BlueprintCallable, Category = "GridNavigationComponent")
-	virtual bool RequestMove(UGrid* DestGrid);
+	virtual bool RequestMove(UGrid* DestGrid, UGridPathFinder* PathFinder = nullptr);
 
 	UFUNCTION(BlueprintCallable, Category = "GridNavigationComponent")
 	virtual bool IsMoving() const;

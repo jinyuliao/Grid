@@ -2,7 +2,6 @@
 #include "GridRuntimePCH.h"
 #include "Grid.h"
 #include "GridManager.h"
-#include "Interfaces/GridPawnInterface.h"
 #include "Components/DefaultGridNavigationAgent.h"
 #include "Util/GridUtilities.h"
 
@@ -55,7 +54,7 @@ void UGridNavigationComponent::BeginPlay()
 	}
 }
 
-bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
+bool UGridNavigationComponent::RequestMove(UGrid* DestGrid, UGridPathFinder* PathFinder)
 {
 	if (OwnerPawn == nullptr)
 	{
@@ -75,17 +74,10 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 		return false;
 	}
 
-	if (!OwnerPawn->GetClass()->ImplementsInterface(UGridPawnInterface::StaticClass()))
-	{
-		LOG_ERROR(TEXT("UGridNavigationComponent::RequestMove failed, owner hasn't implement IGridPawnInterface"));
-		return false;
-	}
+	AGridManager* GridManager = DestGrid->GridManager;
 
-	AGridManager* GridManager = IGridPawnInterface::Execute_GetGridManager(OwnerPawn);
-
-	if (GridManager == nullptr)
+	if (!ensure(GridManager != nullptr))
 	{
-		LOG_ERROR(TEXT("UGridNavigationComponent::RequestMove failed, grid manager is null, maybe your pawn class didn't implement GridPawnInterface?"));
 		return false;
 	}
 
@@ -94,10 +86,15 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid)
 
 	Request.Sender = OwnerPawn;
 	Request.Destination = DestGrid;
-	Request.Start = DestGrid->GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
+	Request.Start = GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
 
-	GridManager->GetPathFinder()->Reset();
-	if (!UGridUtilities::FindPath(Request, GridManager->GetPathFinder(), CurrentFollowingPath))
+	if (PathFinder == nullptr)
+	{
+		PathFinder = GridManager->GetPathFinder();
+		PathFinder->Reset();
+	}
+
+	if (!UGridUtilities::FindPath(Request, PathFinder, CurrentFollowingPath))
 	{
 		return false;
 	}
@@ -136,7 +133,7 @@ bool UGridNavigationComponent::MoveToNextGrid()
 	if (FollowingPathIndex >= CurrentFollowingPath.Num())
 		return false;
 
-	AGridManager* GridManager = IGridPawnInterface::Execute_GetGridManager(OwnerPawn);
+	AGridManager* GridManager = CurrentFollowingPath.Last()->GridManager;
 
 	UGrid* CurrGrid = GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
 	UGrid* NextGrid = CurrentFollowingPath[FollowingPathIndex];
@@ -161,7 +158,7 @@ bool UGridNavigationComponent::MoveToNextPoint()
 	if (FollowingPathIndex >= CurrentFollowingPath.Num())
 		return false;
 
-	AGridManager* GridManager = IGridPawnInterface::Execute_GetGridManager(OwnerPawn);
+	AGridManager* GridManager = CurrentFollowingPath.Last()->GridManager;
 
 	UGrid* CurrGrid = GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
 	UGrid* NextGrid = CurrentFollowingPath[FollowingPathIndex];

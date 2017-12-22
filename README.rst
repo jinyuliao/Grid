@@ -23,11 +23,10 @@ Features
 QuickStart
 ----------
 
-* Implement IGridPawnInterface(C++) or GridPawnInterface(Blueprint) in your pawn class
 * Set pawn's default controller to AAIController or its subclass [#f1]_ 
 * Add UGridNavigationComponent to your pawn [#f2]_
 * Spawn GridManager at game startup [#f3]_
-* Write game logic, most function you need is in GridManager
+* Write game logic
 
 Customizable Classes
 --------------------
