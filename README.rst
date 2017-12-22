@@ -47,8 +47,9 @@ Install
 Donate
 ------
 
-.. image:: docs/images/donate.png
+.. image:: https://jinyuliao.github.io/blog/html/_images/donate.png
     :target: https://jinyuliao.github.io/blog/html/pages/donate.html
+    :alt: Donate
 
 .. _SampleProject: https://github.com/jinyuliao/Sample_Grid
 .. _SRPGTemplate: https://github.com/jinyuliao/SRPGTemplate
