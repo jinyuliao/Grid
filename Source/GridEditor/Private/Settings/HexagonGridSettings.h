@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "HexagonGridSettings")
 	UMaterialInterface* DecalMaterial;
 
+	UPROPERTY(EditAnywhere, Category = "HexagonGridSettings")
+	UMaterialInterface* GridSensingVisualizerMaterial;
+
 private:
 	FEdModeGridEditor* ParentMode;
 };

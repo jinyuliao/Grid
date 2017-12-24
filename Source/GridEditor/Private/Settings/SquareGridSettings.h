@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
 	UMaterialInterface* DecalMaterial;
 
+	UPROPERTY(EditAnywhere, Category = "SqureGridSettings")
+	UMaterialInterface* GridSensingVisualizerMaterial;
+
 private:
 	FEdModeGridEditor* ParentMode;
 };

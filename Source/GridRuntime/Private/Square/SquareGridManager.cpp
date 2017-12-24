@@ -1,4 +1,5 @@
 #include "Square/SquareGridManager.h"
+#include "GridRuntimePCH.h"
 #include "Square/SquarePathFinder.h"
 #include "Util/GridUtilities.h"
 

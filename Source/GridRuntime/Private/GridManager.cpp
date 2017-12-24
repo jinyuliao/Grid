@@ -3,31 +3,7 @@
 #include "GridPainter/GridDecalPainter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Containers/Queue.h"
-#include "Util/GridUtilities.h"
-
-template <typename T>
-struct SharedUObject
-{
-	SharedUObject(T* InObj)
-	{
-		Obj = InObj;
-	}
-
-	~SharedUObject()
-	{
-		if (Obj != nullptr)
-		{
-			Obj->ConditionalBeginDestroy();
-		}
-	}
-
-	T* operator->()
-	{
-		return Obj;
-	}
-
-	T* Obj;
-};
+#include "GridWorldContext.h"
 
 AGridManager::AGridManager()
 {
@@ -55,12 +31,24 @@ void AGridManager::PostInitializeComponents()
 	PostInitGridManager();
 }
 
+void AGridManager::BeginDestroy()
+{
+	if (UGridWorldContext::GetGlobalGridManager() == this)
+	{
+		UGridWorldContext::SetGlobalGridManager(nullptr);
+	}
+
+	Super::BeginDestroy();
+}
+
 void AGridManager::PostInitGridManager()
 {
 	SetGridPainter(GridPainterClass);
 
 	PathFinder = NewObject<UGridPathFinder>(this, PathFinderClass);
 	PathFinder->GridManager = this;
+
+	UGridWorldContext::SetGlobalGridManager(this);
 }
 
 void AGridManager::SetGridPainter(TSubclassOf<UGridPainter> PainterClass)
@@ -87,8 +75,7 @@ void AGridManager::LineTraceTest(const FVector& Center, TArray<FHitResult>& Resu
 	Start.Z += TraceTestDistance / 2;
 	End.Z -= TraceTestDistance / 2;
 
-	TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes;
-	ObjectTypes.Add((EObjectTypeQuery)ECollisionChannel::ECC_WorldStatic);
+	TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes = { UEngineTypes::ConvertToObjectType(ECC_WorldStatic) };
 
 	TArray<AActor*> IgnoreActors;
 

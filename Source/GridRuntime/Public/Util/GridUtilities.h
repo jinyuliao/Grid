@@ -7,6 +7,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "GridUtilities.generated.h"
 
+class AGridManager;
+
 /**
  * 
  */
@@ -39,7 +41,7 @@ public:
 	static bool NotEqual_GridGrid(const UGrid* A, const UGrid* B);
 
 	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
-	static bool GridTraceSingleForObjects(UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor = FLinearColor::Red, FLinearColor TraceHitColor = FLinearColor::Green, float DrawTime = 5.0f);
+	static bool GridTraceSingleForObjects(const UGrid* Grid, float TraceDistance, const TArray<TEnumAsByte<EObjectTypeQuery> > & ObjectTypes, bool bTraceComplex, const TArray<AActor*>& ActorsToIgnore, EDrawDebugTrace::Type DrawDebugType, FHitResult& OutHit, bool bIgnoreSelf, FLinearColor TraceColor = FLinearColor::Red, FLinearColor TraceHitColor = FLinearColor::Green, float DrawTime = 5.0f);
 
 	UFUNCTION(BlueprintCallable, Category = "GridUtilities")
 	static void GetBoundsByGridArray(const TArray<UGrid*>& Grids, FBoxSphereBounds& Bounds);

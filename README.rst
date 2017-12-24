@@ -15,6 +15,7 @@ Features
 * Support multi-level grid
 * Grid-based pathfinding and movement
 * Multiple grid rendering method: Decal and Outline(XCom2-like)
+* Grid sensing component [#f1]_
 * Blueprint support
 * Editor integration
 * Customizable classes
@@ -23,9 +24,11 @@ Features
 QuickStart
 ----------
 
-* Set pawn's default controller to AAIController or its subclass [#f1]_ 
-* Add UGridNavigationComponent to your pawn [#f2]_
-* Spawn GridManager at game startup [#f3]_
+* Register GridWorldContext (optional but recommended)
+* Set pawn's default controller to AAIController or its subclass [#f2]_ 
+* Add UGridNavigationComponent to your pawn [#f3]_
+* Add UGridSensingComponent to your pawn (optional) [#f3]_
+* Spawn GridManager at game startup [#f4]_
 * Write game logic
 
 Customizable Classes
@@ -34,7 +37,7 @@ Customizable Classes
 * UGridInfo: inherit from this class to add game-specific information
 * USquarePathFinder and UHexagonPathFinder: customize pathfinding logic
 * UGridNavigationAgent: inherit from this class to implement special movement, e.g.: jump, climb and so on
-* UGridPainter: customize grid rendering [#f4]_ 
+* UGridPainter: customize grid rendering [#f5]_ 
 
 Install
 -------
@@ -53,7 +56,8 @@ Donate
 .. _SampleProject: https://github.com/jinyuliao/Sample_Grid
 .. _SRPGTemplate: https://github.com/jinyuliao/SRPGTemplate
 
-.. [#f1] we need it to implement default grid-based movement
-.. [#f2] if you have custom UGridNavigationAgent, add it to Component's 'AgentClasses'
-.. [#f3] if you have custom class, set it properly in spawn parameter
-.. [#f4] Default is UGridDecalPainter which using decal component to rendering grid
+.. [#f1] plus a component visualizer for debug and level design
+.. [#f2] we need it to implement default grid-based movement
+.. [#f3] if you have custom UGridNavigationAgent, add it to Component's 'AgentClasses'
+.. [#f4] if you have custom class, set it properly in spawn parameter
+.. [#f5] Default is UGridDecalPainter which using decal component to rendering grid

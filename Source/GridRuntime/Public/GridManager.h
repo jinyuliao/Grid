@@ -4,9 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "GridPathfindingParams.h"
 #include "GridPainter/GridPainter.h"
+#include "Grid.h"
 #include "GridManager.generated.h"
-
-class UGrid;
 
 /**
 *
@@ -21,6 +20,8 @@ public:
 	virtual ~AGridManager();
 
 	virtual void PostInitializeComponents() override;
+
+	virtual void BeginDestroy() override;
 
 	UFUNCTION(BlueprintCallable, Category = "GridManager")
 	virtual void SetGridSize(float GridSize);

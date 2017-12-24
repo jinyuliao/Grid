@@ -19,12 +19,12 @@
 		{
 			"Name" : "GridRuntime",
 			"Type" : "Runtime",
-			"LoadingPhase" : "PreDefault"
-		},
-		{
-			"Name" : "GridEditor",
-			"Type" : "Editor",
 			"LoadingPhase" : "Default"
-		}
+		},
+    {
+      "Name": "GridEditor",
+      "Type": "Editor",
+      "LoadingPhase": "PostEngineInit"
+    }
 	]
 }

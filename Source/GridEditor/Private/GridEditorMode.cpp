@@ -1,12 +1,17 @@
 #include "GridEditorMode.h"
 #include "GridEditorPCH.h"
+#include "Editor/UnrealEdEngine.h"
+#include "UnrealEdGlobals.h"
 #include "Toolkits/ToolkitManager.h"
 #include "EditorModeManager.h"
 #include "GridEditorModeToolkit.h"
 #include "GridEditorCommands.h"
-#include "GridPainter/GridDecalPainter.h"
 #include "FileHelper.h"
 #include "MessageDialog.h"
+#include "Components/GridSensingComponent.h"
+#include "ComponentVisualizers/GridSensingComponentVisualizer.h"
+#include "GridPainter_Editor.h"
+#include "GridInfo_Editor.h"
 
 #define LOCTEXT_NAMESPACE "GridEditorMode" 
 
@@ -24,6 +29,8 @@ FEdModeGridEditor::FEdModeGridEditor()
 
 	HexagonGridSettings = NewObject<UHexagonGridSettings>(GetTransientPackage(), TEXT("HexagonGridSettings"), RF_Transactional);
 	HexagonGridSettings->SetParent(this);
+
+	GetSensingCompVisualizer()->GridEditor = this;
 }
 
 FEdModeGridEditor::~FEdModeGridEditor()
@@ -64,11 +71,13 @@ void FEdModeGridEditor::Enter()
 		bEditorDelegateRegistered = true;
 	}
 
-	GetGridManager();
+	GetSensingCompVisualizer()->SetEnabled(true);
 }
 
 void FEdModeGridEditor::Exit()
 {
+	GetSensingCompVisualizer()->SetEnabled(false);
+
 	if (Toolkit.IsValid())
 	{
 		FToolkitManager::Get().CloseToolkit(Toolkit.ToSharedRef());
@@ -110,6 +119,15 @@ void FEdModeGridEditor::ActorPropChangeNotify()
 
 void FEdModeGridEditor::ActorSelectionChangeNotify()
 {
+	AActor* SelectedActor = GetFirstSelectedActorInstance();
+	if (SelectedActor == nullptr)
+		return;
+
+	UGridSensingComponent* SensingComp = Cast<UGridSensingComponent>(SelectedActor->GetComponentByClass(UGridSensingComponent::StaticClass()));
+	if (SensingComp == nullptr)
+	{
+		GetSensingCompVisualizer()->ClearSensingGrids();
+	}
 }
 
 void FEdModeGridEditor::AddReferencedObjects(FReferenceCollector& Collector)
@@ -123,6 +141,10 @@ void FEdModeGridEditor::AddReferencedObjects(FReferenceCollector& Collector)
 void FEdModeGridEditor::SetCurrentMode(FName ModeName)
 {
 	CurrentModeName = ModeName;
+
+	AGridManager* GridManager = GetGridManager();
+	UGridPainter_Editor* DecalPainter = Cast<UGridPainter_Editor>(GridManager->GetGridPainter());
+	DecalPainter->bIsSquareGrid = CurrentModeName == FGridEditorCommands::SquareModeName;
 }
 
 FName FEdModeGridEditor::GetCurrentMode()
@@ -141,9 +163,11 @@ void FEdModeGridEditor::OnNewCurrentLevel()
 
 void FEdModeGridEditor::OnMapChanged(uint32 Event)
 {
+	GetSensingCompVisualizer()->SensingGrids.Reset();
+
+	VisibleGrids.Reset();
+
 	FreeGridManager();
-	GetGridManager();
-	LOG_WARNING(TEXT("Map Changed"));
 }
 
 void FEdModeGridEditor::OnBeginPIE(bool bIsSimulating)
@@ -166,6 +190,8 @@ AGridManager* FEdModeGridEditor::GetGridManager()
 		if (SquareGridManager == nullptr)
 		{
 			SquareGridManager = GetEditorWorld()->SpawnActor<ASquareGridManager>();
+			SquareGridManager->GridPainterClass = UGridPainter_Editor::StaticClass();
+			SquareGridManager->GridInfoClass = UGridInfo_Editor::StaticClass();
 			//Actor::PostInitializeComponents wouldn't be called in editor mode, so we create grid painter manually
 			SquareGridManager->PostInitGridManager();
 			UpdateGridSettings();
@@ -178,6 +204,8 @@ AGridManager* FEdModeGridEditor::GetGridManager()
 		if (HexGridManager == nullptr)
 		{
 			HexGridManager = GetEditorWorld()->SpawnActor<AHexagonGridManager>();
+			HexGridManager->GridPainterClass = UGridPainter_Editor::StaticClass();
+			HexGridManager->GridInfoClass = UGridInfo_Editor::StaticClass();
 			//Actor::PostInitializeComponents wouldn't be called in editor mode, so we create grid painter manually
 			HexGridManager->PostInitGridManager();
 			UpdateGridSettings();
@@ -193,29 +221,28 @@ AGridManager* FEdModeGridEditor::GetGridManager()
 
 void FEdModeGridEditor::FreeGridManager()
 {
-	VisibleGrids.Reset();
+	ClearVisibleGrids();
 
-	if (HexGridManager != nullptr)
-	{
-		//HexCellManager->BeginDestroy();
-		HexGridManager = nullptr;
-	}
+	HexGridManager = nullptr;
 
-	if (SquareGridManager != nullptr)
-	{
-		//SquareCellManager->BeginDestroy();
-		SquareGridManager = nullptr;
-	}
+	SquareGridManager = nullptr;
 }
 
-void FEdModeGridEditor::UpdateGridSettings()
+void FEdModeGridEditor::ClearVisibleGrids()
 {
 	for (int i = 0; i < VisibleGrids.Num(); ++i)
 	{
 		UGrid* Grid = VisibleGrids[i];
-		Grid->SetVisibility(false);
+		UGridInfo_Editor* GridInfo = Cast<UGridInfo_Editor>(Grid->GridInfo);
+		GridInfo->SetShowNormal(false);
+		Grid->SetVisibility(GridInfo->GetVisibility());
 	}
 	VisibleGrids.Reset();
+}
+
+void FEdModeGridEditor::UpdateGridSettings()
+{
+	ClearVisibleGrids();
 
 	if (CurrentModeName == FGridEditorCommands::SquareModeName)
 	{
@@ -230,11 +257,13 @@ void FEdModeGridEditor::UpdateGridSettings()
 void FEdModeGridEditor::UpdateSquareSettings()
 {
 	AGridManager* GridManager = GetGridManager();
-	UGridDecalPainter* DecalPainter = Cast<UGridDecalPainter>(GridManager->GetGridPainter());
+	UGridPainter_Editor* DecalPainter = Cast<UGridPainter_Editor>(GridManager->GetGridPainter());
 
 	if (DecalPainter != nullptr)
 	{
 		DecalPainter->DefaultDecalMaterial = SquareGridSettings->DecalMaterial;
+		DecalPainter->SquareNormalMaterial = SquareGridSettings->DecalMaterial;
+		DecalPainter->SquareSensingMaterial = SquareGridSettings->GridSensingVisualizerMaterial;
 	}
 	GridManager->SetGridSize(SquareGridSettings->GridSize);
 
@@ -248,7 +277,9 @@ void FEdModeGridEditor::UpdateSquareSettings()
 		for (int i = 0; i < VisibleGrids.Num(); ++i)
 		{
 			UGrid* Grid = VisibleGrids[i];
-			Grid->SetVisibility(true);
+			UGridInfo_Editor* GridInfo = Cast<UGridInfo_Editor>(Grid->GridInfo);
+			GridInfo->SetShowNormal(true);
+			Grid->SetVisibility(GridInfo->GetVisibility());
 		}
 	}
 }
@@ -256,11 +287,13 @@ void FEdModeGridEditor::UpdateSquareSettings()
 void FEdModeGridEditor::UpdateHexagonSettings()
 {
 	AGridManager* GridManager = GetGridManager();
-	UGridDecalPainter* DecalPainter = Cast<UGridDecalPainter>(GridManager->GetGridPainter());
+	UGridPainter_Editor* DecalPainter = Cast<UGridPainter_Editor>(GridManager->GetGridPainter());
 
 	if (DecalPainter != nullptr)
 	{
 		DecalPainter->DefaultDecalMaterial = HexagonGridSettings->DecalMaterial;
+		DecalPainter->HexNormalMaterial = HexagonGridSettings->DecalMaterial;
+		DecalPainter->HexSensingMaterial = HexagonGridSettings->GridSensingVisualizerMaterial;
 	}
 	GridManager->SetGridSize(HexagonGridSettings->GridSize);
 
@@ -274,9 +307,16 @@ void FEdModeGridEditor::UpdateHexagonSettings()
 		for (int i = 0; i < VisibleGrids.Num(); ++i)
 		{
 			UGrid* Grid = VisibleGrids[i];
-			Grid->SetVisibility(true);
+			UGridInfo_Editor* GridInfo = Cast<UGridInfo_Editor>(Grid->GridInfo);
+			GridInfo->SetShowNormal(true);
+			Grid->SetVisibility(GridInfo->GetVisibility());
 		}
 	}
+}
+
+TSharedPtr<FGridSensingComponentVisualizer> FEdModeGridEditor::GetSensingCompVisualizer() const
+{
+	return StaticCastSharedPtr<FGridSensingComponentVisualizer>(GUnrealEd->FindComponentVisualizer(UGridSensingComponent::StaticClass()->GetFName()));
 }
 
 #undef LOCTEXT_NAMESPACE

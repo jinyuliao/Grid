@@ -27,6 +27,8 @@ public:
 
 	virtual void AddReferencedObjects(FReferenceCollector& Collector) override;
 
+	AGridManager* GetGridManager();
+
 	void SetCurrentMode(FName ModeName);
 	FName GetCurrentMode();
 
@@ -44,12 +46,14 @@ private:
 
 	UWorld* GetEditorWorld();
 
-	AGridManager* GetGridManager();
 	void FreeGridManager();
+	void ClearVisibleGrids();
 
 	void UpdateGridSettings();
 	void UpdateSquareSettings();
 	void UpdateHexagonSettings();
+
+	TSharedPtr<class FGridSensingComponentVisualizer> GetSensingCompVisualizer() const;
 
 private:
 	int32 GridShowRange;
