@@ -27,7 +27,7 @@ QuickStart
 * Register GridWorldContext (optional but recommended)
 * Set pawn's default controller to AAIController or its subclass [#f2]_ 
 * Add UGridNavigationComponent to your pawn [#f3]_
-* Add UGridSensingComponent to your pawn (optional) [#f3]_
+* Add UGridSensingComponent to your pawn (optional)
 * Spawn GridManager at game startup [#f4]_
 * Write game logic
 
