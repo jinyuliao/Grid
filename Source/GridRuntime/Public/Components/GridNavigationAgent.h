@@ -29,6 +29,10 @@ public:
 	bool RequestMove(APawn* Pawn, UGrid* From, UGrid* To);
 	virtual bool RequestMove_Implementation(APawn* Pawn, UGrid* From, UGrid* To);
 
+	UFUNCTION(BlueprintNativeEvent, Category = "GridNavigationAgent")
+	void StopMove();
+	virtual void StopMove_Implementation();
+
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "GridNavigationAgent")
 	FGridNavAgentEvent OnMoveCompleted;
 };

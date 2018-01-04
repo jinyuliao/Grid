@@ -18,3 +18,8 @@ bool UGridNavigationAgent::RequestMove_Implementation(APawn* Pawn, UGrid* From, 
 {
 	return false;
 }
+
+void UGridNavigationAgent::StopMove_Implementation()
+{
+
+}

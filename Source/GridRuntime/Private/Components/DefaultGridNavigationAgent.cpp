@@ -32,17 +32,17 @@ bool UDefaultGridNavigationAgent::RequestMove_Implementation(APawn* Pawn, UGrid*
 	if (Pawn == nullptr || From == nullptr || To == nullptr)
 		return false;
 
-	CurrPawn = Pawn;
-	CurrController = Cast<AAIController>(Pawn->GetController());
+	CurrentPawn = Pawn;
+	CurrentController = Cast<AAIController>(Pawn->GetController());
 
-	if (CurrController == nullptr)
+	if (CurrentController == nullptr)
 		return false;
 
 	FScriptDelegate Delegate;
 	Delegate.BindUFunction(this, "OnAIControllerMoveCompeleted");
-	CurrController->ReceiveMoveCompleted.AddUnique(Delegate);
+	CurrentController->ReceiveMoveCompleted.AddUnique(Delegate);
 
-	EPathFollowingRequestResult::Type Result = CurrController->MoveToLocation(To->GetCenter(), AcceptanceRadius, false);
+	EPathFollowingRequestResult::Type Result = CurrentController->MoveToLocation(To->GetCenter(), AcceptanceRadius, false);
 
 	bool Succ = false;
 
@@ -67,6 +67,18 @@ bool UDefaultGridNavigationAgent::RequestMove_Implementation(APawn* Pawn, UGrid*
 	return Succ;
 }
 
+void UDefaultGridNavigationAgent::StopMove_Implementation()
+{
+	if (CurrentController != nullptr)
+	{
+		CurrentController->ReceiveMoveCompleted.RemoveAll(this);
+		CurrentController->StopMovement();
+
+		CurrentPawn = nullptr;
+		CurrentController = nullptr;
+	}
+}
+
 void UDefaultGridNavigationAgent::OnAIControllerMoveCompeleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)
 {
 	bool Succ = false;
@@ -85,11 +97,11 @@ void UDefaultGridNavigationAgent::OnAIControllerMoveCompeleted(FAIRequestID Requ
 		break;
 	}
 
-	APawn* TempPawn = CurrPawn;
+	APawn* TempPawn = CurrentPawn;
 
-	CurrController->ReceiveMoveCompleted.RemoveAll(this);
-	CurrPawn = nullptr;
-	CurrController = nullptr;
+	CurrentController->ReceiveMoveCompleted.RemoveAll(this);
+	CurrentPawn = nullptr;
+	CurrentController = nullptr;
 
 	OnMoveCompleted.Broadcast(TempPawn, Succ);
 }

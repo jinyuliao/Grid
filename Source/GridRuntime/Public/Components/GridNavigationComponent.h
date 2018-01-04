@@ -37,6 +37,9 @@ public:
 	virtual bool RequestMove(UGrid* DestGrid, UGridPathFinder* PathFinder = nullptr);
 
 	UFUNCTION(BlueprintCallable, Category = "GridNavigationComponent")
+	virtual void StopMove();
+
+	UFUNCTION(BlueprintCallable, Category = "GridNavigationComponent")
 	virtual bool IsMoving() const;
 
 	UPROPERTY(BlueprintAssignable, Category = "GridNavigationComponent")
@@ -78,4 +81,6 @@ protected:
 
 	UPROPERTY()
 	TArray<UGridNavigationAgent*> Agents;
+
+	UGridNavigationAgent* CurrentAgent;
 };

@@ -22,6 +22,8 @@ public:
 
 	virtual bool RequestMove_Implementation(APawn* Pawn, UGrid* From, UGrid* To) override;
 
+	virtual void StopMove_Implementation() override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "DefaultGridNavigationAgent")
 	float AcceptanceRadius;
 
@@ -30,8 +32,8 @@ protected:
 	virtual void OnAIControllerMoveCompeleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
 
 	UPROPERTY()
-	APawn* CurrPawn;
+	APawn* CurrentPawn;
 
 	UPROPERTY()
-	AAIController* CurrController;
+	AAIController* CurrentController;
 };

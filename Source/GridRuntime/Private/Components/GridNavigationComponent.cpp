@@ -108,6 +108,15 @@ bool UGridNavigationComponent::RequestMove(UGrid* DestGrid, UGridPathFinder* Pat
 	return true;
 }
 
+void UGridNavigationComponent::StopMove()
+{
+	if (CurrentAgent != nullptr)
+	{
+		CurrentAgent->StopMove();
+		CurrentAgent = nullptr;
+	}
+}
+
 bool UGridNavigationComponent::IsMoving() const
 {
 	return bIsMoving;
@@ -138,15 +147,15 @@ bool UGridNavigationComponent::MoveToNextGrid()
 	UGrid* CurrGrid = GridManager->GetGridByPosition(OwnerPawn->GetActorLocation());
 	UGrid* NextGrid = CurrentFollowingPath[FollowingPathIndex];
 
-	UGridNavigationAgent* Agent = FindAgent(CurrGrid, NextGrid);
+	CurrentAgent = FindAgent(CurrGrid, NextGrid);
 
-	if (Agent == nullptr)
+	if (CurrentAgent == nullptr)
 	{
 		LOG_ERROR(TEXT("UGridNavigationComponent::MoveToNextGrid can't find proper agent"));
 		return false;
 	}
 
-	Agent->RequestMove(OwnerPawn, CurrGrid, NextGrid);
+	CurrentAgent->RequestMove(OwnerPawn, CurrGrid, NextGrid);
 
 	return true;
 }
