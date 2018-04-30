@@ -1,10 +1,11 @@
 #include "Components/GridSensingComponent.h"
+#include "GridRuntimePCH.h"
 #include "Engine/Engine.h"
 #include "Util/GridUtilities.h"
-#include "GridWorldContext.h"
 #include "GridManager.h"
 #include "Square/SquareGridManager.h"
 #include "TimerManager.h"
+#include "GridInterface.h"
 
 UGridSensingComponent::UGridSensingComponent()
 {
@@ -58,12 +59,18 @@ bool UGridSensingComponent::CouldSeePawn(const APawn* Pawn) const
 
 void UGridSensingComponent::GetSensingGrids(TArray<UGrid*>& SensingGrids) const
 {
-	GetSensingGridsInternal(UGridWorldContext::GetGridWorldContext()->GetGridManager(), SensingGrids);
+	GetSensingGridsInternal(GetGridManager(), SensingGrids);
 }
 
 void UGridSensingComponent::GetSensingGridsInternal(AGridManager* GridManager, TArray<UGrid*>& SensingGrids) const
 {
 	SensingGrids.Reset();
+
+	if (GridManager == nullptr)
+	{
+		LOG_WARNING(TEXT("UGridSensingComponent::GetSensingGridsInternal GridManager is nullptr."));
+		return;
+	}
 
 	FVector SensorLocation;
 	FRotator SensorRotation;
@@ -122,11 +129,6 @@ void UGridSensingComponent::OnSensingTimer()
 void UGridSensingComponent::UpdateSensing()
 {
 	AActor* Owner = GetOwner();
-	UGridWorldContext* GridWorldContext = UGridWorldContext::GetGridWorldContext();
-	AGridManager* GridManager = GridWorldContext->GetGridManager();
-
-	if (GridManager == nullptr)
-		return;
 
 	TArray<APawn*> OldSenseResult = SensedPawns;
 	SensedPawns.Reset();
@@ -137,7 +139,7 @@ void UGridSensingComponent::UpdateSensing()
 
 	for (int32 i = 0; i < SensingGrids.Num(); ++i)
 	{
-		APawn* Pawn = GridWorldContext->GetPawnOnGrid(SensingGrids[i]);
+		APawn* Pawn = GetPawnByGrid(SensingGrids[i]);
 		if (Pawn != nullptr && Pawn != Owner)
 		{
 			bool CouldSense = false;
@@ -174,6 +176,33 @@ AController* UGridSensingComponent::GetSensorController() const
 	if (IsValid(Pawn) && IsValid(Pawn->Controller))
 	{
 		return Pawn->Controller;
+	}
+	return nullptr;
+}
+
+AGridManager* UGridSensingComponent::GetGridManager() const
+{
+	AActor* Owner = GetOwner();
+	if (Owner->GetClass()->ImplementsInterface(UGridPawnInterface::StaticClass()))
+		return IGridPawnInterface::Execute_GetGridManager(Owner);
+	return nullptr;
+}
+
+APawn* UGridSensingComponent::GetPawnByGrid(UGrid* Grid) const
+{
+	AActor* Owner = GetOwner();
+	AGridManager* GridManager = GetGridManager();
+
+	if (ensure(GridManager != nullptr))
+	{
+		for (FConstPawnIterator Iterator = Owner->GetWorld()->GetPawnIterator(); Iterator; ++Iterator)
+		{
+			APawn* Pawn = Iterator->Get();
+			if (Grid->Equal(GridManager->GetGridByPosition(Pawn->GetActorLocation())))
+			{
+				return Pawn;
+			}
+		}
 	}
 	return nullptr;
 }

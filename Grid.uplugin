@@ -16,11 +16,11 @@
 	"Installed" : false,
 	"Modules" :
 	[
-		{
-			"Name" : "GridRuntime",
-			"Type" : "Runtime",
-			"LoadingPhase" : "Default"
-		},
+    {
+      "Name": "GridRuntime",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault"
+    },
     {
       "Name": "GridEditor",
       "Type": "Editor",

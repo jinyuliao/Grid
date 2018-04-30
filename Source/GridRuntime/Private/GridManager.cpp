@@ -3,7 +3,6 @@
 #include "GridPainter/GridDecalPainter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Containers/Queue.h"
-#include "GridWorldContext.h"
 
 AGridManager::AGridManager()
 {
@@ -33,11 +32,6 @@ void AGridManager::PostInitializeComponents()
 
 void AGridManager::BeginDestroy()
 {
-	if (UGridWorldContext::GetGlobalGridManager() == this)
-	{
-		UGridWorldContext::SetGlobalGridManager(nullptr);
-	}
-
 	Super::BeginDestroy();
 }
 
@@ -47,8 +41,6 @@ void AGridManager::PostInitGridManager()
 
 	PathFinder = NewObject<UGridPathFinder>(this, PathFinderClass);
 	PathFinder->GridManager = this;
-
-	UGridWorldContext::SetGlobalGridManager(this);
 }
 
 void AGridManager::SetGridPainter(TSubclassOf<UGridPainter> PainterClass)
