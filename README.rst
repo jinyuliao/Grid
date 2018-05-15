@@ -24,7 +24,6 @@ Features
 QuickStart
 ----------
 
-* Register GridWorldContext (optional but recommended)
 * Set pawn's default controller to AAIController or its subclass [#f2]_ 
 * Add UGridNavigationComponent to your pawn [#f3]_
 * Add UGridSensingComponent to your pawn (optional)
