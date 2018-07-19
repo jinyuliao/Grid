@@ -1,7 +1,7 @@
 #include "Components/DefaultGridNavigationAgent.h"
 #include "GridRuntimePCH.h"
-#include "AI/Navigation/NavigationSystem.h"
-#include "AI/Navigation/NavigationPath.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
 
 UDefaultGridNavigationAgent::UDefaultGridNavigationAgent()
 {
@@ -18,7 +18,7 @@ bool UDefaultGridNavigationAgent::Check_Implementation(APawn* Pawn, UGrid* From,
 	if (Pawn == nullptr || From == nullptr || To == nullptr || Cast<AAIController>(Pawn->GetController()) == nullptr)
 		return false;
 
-	UNavigationSystem* NavSys = UNavigationSystem::GetCurrent(Pawn->GetWorld());
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(Pawn->GetWorld());
 	UNavigationPath* Path = NavSys->FindPathToLocationSynchronously((UObject*)Pawn->GetWorld(), From->GetCenter(), To->GetCenter(), Pawn);
 
 	if (Path == nullptr || !Path->IsValid() || Path->IsPartial())
