@@ -5,7 +5,7 @@
 #include "PropertyCustomizationHelpers.h"
 #include "SlateOptMacros.h"
 #include "DesktopPlatformModule.h"
-#include "SlateApplication.h"
+#include "Framework/Application/SlateApplication.h"
 #include "EditorModeManager.h"
 
 extern const FEditorModeID EM_GridEditor;

@@ -1,7 +1,7 @@
 #include "SquareGridSettings.h"
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstance.h"
-#include "ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 
 USquareGridSettings::USquareGridSettings()
 {

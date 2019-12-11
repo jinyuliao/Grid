@@ -4,9 +4,11 @@ namespace UnrealBuildTool.Rules
 	{
 		public GridRuntime(ReadOnlyTargetRules Target) : base(Target)
         {
-            PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+			PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+			bLegacyPublicIncludePaths = false;
+			ShadowVariableWarningLevel = WarningLevel.Error;
 
-            PublicIncludePaths.AddRange(
+			PublicIncludePaths.AddRange(
 				new string[] {
 					// ... add public include paths required here ...
 				}

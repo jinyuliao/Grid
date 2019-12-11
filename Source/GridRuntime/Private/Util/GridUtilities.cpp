@@ -7,7 +7,7 @@ class FAStar
 {
 public:
 	FAStar(UGrid* _Start, UGrid* _Goal, UGridPathFinder* _PathFinder, bool _Reversed = false)
-		: Start(_Start), Goal(_Goal), PathFinder(_PathFinder), Reversed(_Reversed), Succ(false)
+		: Succ(false), Reversed(_Reversed), Start(_Start), Goal(_Goal), PathFinder(_PathFinder)
 	{
 		Comparer.FCost = &FCost;
 
@@ -118,7 +118,7 @@ class FBidirectionalAStar
 {
 public:
 	FBidirectionalAStar(UGrid* _Start, UGrid* _Goal, UGridPathFinder* _PathFinder)
-		:ForwardAStar(_Start, _Goal, _PathFinder), BackwardAStar(_Goal, _Start, _PathFinder, true), Succ(false), IntersectGrid(nullptr)
+		:Succ(false), IntersectGrid(nullptr), ForwardAStar(_Start, _Goal, _PathFinder), BackwardAStar(_Goal, _Start, _PathFinder, true)
 	{}
 
 	bool Step()

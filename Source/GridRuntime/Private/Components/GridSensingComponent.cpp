@@ -1,6 +1,7 @@
 #include "Components/GridSensingComponent.h"
 #include "GridRuntimePCH.h"
 #include "Engine/Engine.h"
+#include "EngineUtils.h"
 #include "Util/GridUtilities.h"
 #include "GridManager.h"
 #include "Square/SquareGridManager.h"
@@ -195,9 +196,9 @@ APawn* UGridSensingComponent::GetPawnByGrid(UGrid* Grid) const
 
 	if (ensure(GridManager != nullptr))
 	{
-		for (FConstPawnIterator Iterator = Owner->GetWorld()->GetPawnIterator(); Iterator; ++Iterator)
+		for (TActorIterator<APawn> Iterator(Owner->GetWorld()); Iterator; ++Iterator)
 		{
-			APawn* Pawn = Iterator->Get();
+			APawn* Pawn = *Iterator;
 			if (Grid->Equal(GridManager->GetGridByPosition(Pawn->GetActorLocation())))
 			{
 				return Pawn;
