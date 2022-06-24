@@ -136,7 +136,7 @@ public:
 				return false;
 
 			if (BackwardAStar.Succ)
-				IntersectGrid = BackwardAStar.Start;
+				IntersectGrid = BackwardAStar.Goal;
 		}
 
 		if (IntersectGrid == nullptr)
