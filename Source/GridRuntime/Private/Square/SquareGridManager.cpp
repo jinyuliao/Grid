@@ -187,7 +187,7 @@ void ASquareGridManager::CreateGrids(const FIntVector& Coord, FSquareGridArray& 
 		{
 			// if this static mesh is too close to previous one, it has been blocked, skip this result
 			FVector Oringin, Extent;
-			HitResults[i - 1].Actor->GetActorBounds(true, Oringin, Extent);
+			HitResults[i - 1].GetActor()->GetActorBounds(true, Oringin, Extent);
 
 			FBox Bound = FBox::BuildAABB(Oringin, Extent);
 

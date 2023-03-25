@@ -4,6 +4,7 @@
 #include "SlateOptMacros.h"
 #include "PropertyEditorModule.h"
 #include "EditorModeManager.h"
+#include "EditorStyleSet.h"
 #include "GridEditorCommands.h"
 #include "GridEditorMode.h"
 
@@ -104,7 +105,6 @@ bool SGridEditor::GetGridEditorIsEnabled() const
 
 bool SGridEditor::GetIsPropertyVisible(const FPropertyAndParent& PropertyAndParent) const
 {
-	const UProperty& Property = PropertyAndParent.Property;
 
 	FEdModeGridEditor* GridEditorMode = GetEditorMode();
 	if (GridEditorMode != nullptr)

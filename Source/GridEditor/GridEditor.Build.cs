@@ -50,7 +50,8 @@ namespace UnrealBuildTool.Rules
                     "EditorStyle",
                     "ContentBrowser",
                     "DesktopPlatform",
-                    "Json"
+                    "Json",
+                    "EditorFramework"
 					// ... add private dependencies that you statically link with here ...
 				}
 				);
