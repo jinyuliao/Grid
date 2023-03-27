@@ -1,5 +1,7 @@
 #include "GridEditorCommands.h"
 
+#include "EditorStyleSet.h"
+
 #define LOCTEXT_NAMESPACE "GridEditorCommands" 
 
 FName FGridEditorCommands::SquareModeName = "ToolMode_Square";
